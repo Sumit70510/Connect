@@ -7,11 +7,14 @@ import connectDB from './utils/db.js';
 dotenv.config();
 const app=express();
 app.use(express.json());
-app.use(urlencoded({extended:true}));
+app.use(express.urlencoded({extended:true}));
+app.use(cookieParser());
+
 const corsOption={
     origin : "http:localhost:5173",
-    credentials : true
+    credentials : true 
 }
+
 app.use(cors(corsOption));
 const PORT=process.env.PORT||3000;
 
@@ -25,4 +28,4 @@ app.get("/",(req,res)=>{
 app.listen(PORT,()=>{
     connectDB();
     console.log(`Server Listen To Port ${PORT}`);
-})
+});
