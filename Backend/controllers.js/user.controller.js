@@ -116,7 +116,7 @@ export const getProfile = async(req,res)=>
       try
        {
          const userId=req.params.id;
-         let user =  await User.findById(userId);
+         let user =  await User.findById(userId).select("-password");
          if(!user)
           {
            return res.status(401).json({
@@ -149,7 +149,7 @@ export const editProfile = async(req,res)=>
           const fileUri = getDataUri(profilePicture);
           cloudResponse = await cloudinary.uploader.upload(fileUri);
         }
-       const user = await User.findById(userId);
+       const user = await User.findById(userId).select("-password");
        if(!user)
          {
             return res.status(404).json({
@@ -220,32 +220,32 @@ export const followOrUnfollow = async(req,res) =>
              success : false
            }); 
          }
-         const isfollowing = user.following.includes(followed);
-         let str=""; 
+         const isfollowing = user.following.includes(targetUser._id);
+         let str="No Response"; 
         if(isfollowing)
          {
-          await Promise.all([
-            user.updateOne({_id:follower},{$pull:{following : followed}}),
-            targetUser.updateOne({_id:followed},{$pull:{followers: follower}})
-          ]);
-          str="Unfollowed Successfully"
+           await Promise.all([
+             User.updateOne({_id:user._id},{$pull:{following : targetUser._id}}),
+             User.updateOne({_id:targetUser._id},{$pull:{followers: user._id}})
+           ]);
+           str="Unfollowed Successfully";
          }
         else
          {
            await Promise.all([
-             user.updateOne({_id:follower},{$push:{following:followed}}),
-             targetUser.updateOne({_id:followed},{$push:{followers:follower}})
+             User.updateOne({_id:user._id},{$addToSet:{following:targetUser._id}}),
+             User.updateOne({_id:targetUser._id},{$addToSet:{followers:user._id}})
            ])
            str="Followed Successfully";
-        }          
+         }          
         return res.status(200).json({
           message : str,
           success : true
-        }) 
-    }
-     catch(error)
-      {
-        console.log(error);
-        return res.status(500).json({ message: "Internal Server Error", success: false });
-      }    
+        }); 
+     }
+    catch(error)
+     {
+       console.log(error);
+       return res.status(500).json({ message: "Internal Server Error", success: false });
+     }    
   }  
