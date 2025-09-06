@@ -3,6 +3,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import getDataUri from "../utils/DataUri.js";
 import cloudinary from "../utils/cloudinary.js";
+import {Post} from '../Models/post.model.js';
+
 export const register = async(req,res)=>
   {
     try{
@@ -46,14 +48,16 @@ export const login = async(req,res)=>
      try
       {
         const {email,password}=req.body;
-         if(!email||!password)
+        
+        if(!email||!password)
          {
            return res.status(401).json({
             message:"Something is Missing, Please Check !",
             success:false
            });
          }
-        const user = await User.findOne({email});
+        let user = await User.findOne({email});
+        
         if(!user)
          {
            return res.status(401).json({
@@ -69,23 +73,35 @@ export const login = async(req,res)=>
             success:false
            });   
          }   
-         const userResponse={
-             _id:user._id,
+         
+         const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY,{expiresIn:'1d'});
+         
+         const populatedPosts= await Promise.all(
+           user.posts.map(async(postId)=>{
+            const post = await Post.findById(postId);
+             if(post.author.equals(user._id))
+               {return post;}
+             return null; 
+           })) 
+           
+         user={
+             _id : user._id,
             username : user.username,
             email : user.email,
             profilePicture : user.profilePicture,
             bio : user.bio,
-            followers:user.followers,
-            following:user.following,
-            posts:user.posts
+            followers : user.followers,
+            following : user.following,
+            posts : populatedPosts
          }
-        const token = jwt.sign({ userId: userResponse._id }, process.env.SECRET_KEY,{expiresIn:'1d'});
+        
         return res.cookie('token',token,{httpOnly:true,sameSite:'strict',maxAge:1*24*60*60*1000})
         .json({
-            message : `Welcome Back ${userResponse.username}`,
+            message : `Welcome Back ${user.username}`,
             success : true,
-            user : userResponse
+            user
         });
+  
       }
      catch(error)
       {

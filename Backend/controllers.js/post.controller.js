@@ -1,13 +1,14 @@
 import cloudinary from "../utils/cloudinary.js";
-import Post from '../Models/post.model.js';
-import User from '../Models/user.model.js'
-import Comment from '../Models/comment.model.js';
+import {Post} from '../Models/post.model.js';
+import {User} from '../Models/user.model.js'
+import {Comment} from '../Models/comment.model.js';
+import sharp from "sharp";
 
 export const addNewPost = async(req,res)=>
  {
    try
     { 
-     const caption=req.body;
+     const {caption}=req.body;
      const image=req.file;
      const authorId=req.id;
      
@@ -18,16 +19,24 @@ export const addNewPost = async(req,res)=>
          success : false
         })  
       }
-     
-     const optimizedImageBuffer = await sharp(image.buffer)
+
+   const optimizedImageBuffer = await sharp(image.buffer)
           .resize({width :800 ,height : 800 , fit :"inside"})
-          .toFormat('jpeg',{qualtiy:80}).toBuffer(); 
-     const fileUri = `data:image/jpeg;base64,${optimizedImageBuffer.toString('base64')}`;      
-     const cloudResponse = await cloudinary.uploader.upload(fileUri);
+          .toFormat('jpeg',{quality:80}).toBuffer(); 
+   const fileUri = `data:image/jpeg;base64,${optimizedImageBuffer.toString('base64')}`;      
+    //  const cloudResponse = await cloudinary.uploader.upload(fileUri);
+     const cloudResponse = await new Promise((resolve, reject) => {
+       cloudinary.uploader.upload_stream({ folder: "posts" },(error, result) => {
+           if(error) 
+            reject(error);
+           else 
+            resolve(result);
+         }).end(optimizedImageBuffer);
+       }); 
+
+     const user = await User.findById(authorId);
       
-     const user = await findById(authorId);
-      
-     const post = await Post.Create({
+     const post = await Post.create({
         caption,
         image:cloudResponse.secure_url,
         author:user._id      
@@ -46,6 +55,7 @@ export const addNewPost = async(req,res)=>
        post,
        success :true
       });      
+      
     }
    catch(error)
     {
@@ -193,11 +203,13 @@ export const addComment = async(req,res)=>
          });
        }
       
-      const comment = await Comment.Create({
+      const comment = await Comment.create({
          text,
          author:commenter,
          post : post._id
-      }).populate({path:'authore',select:'username,profilePicture'});
+      })
+      
+      await comment.populate({path:'author',select:'username,profilePicture'});
       
       post.comments.push(comment._id);
       await post.save();
@@ -215,6 +227,49 @@ export const addComment = async(req,res)=>
       return res.status(500).json({message:"Internal Server Error",success: false}); 
     } 
  } 
+ export const delComment = async(req,res)=>
+  {
+    try
+     {
+       const postId = req.params.id;
+       const commenter = req.id;
+       const commentId = req.params.cid;
+       
+       const post = await Post.findById(postId);
+       const comment = await Comment.findById(commentId);
+       
+       if(!post||!comment)
+        {
+          return res.status(404).json({
+            message : 'Post or Comment not found',
+            success : false
+          });
+        }
+       
+       if(commenter.toString()!==comment.author.toString())
+        {
+          return res.status(401).json({
+            message : 'Unauthorized',
+            success : false
+          });
+        }
+        
+       await comment.deleteOne();       
+       await post.comments.pull(commentId);
+       await post.save();
+       
+       return res.status(200).json({
+         message : 'Comment Deleted',
+         success :  true
+       });
+        
+     }
+    catch(error)
+     {
+       console.log(error);
+       return res.status(500).json({message:"Internal Server Error",success: false}); 
+     } 
+  } 
  
 export const getCommentsOfPost = async(req,res)=>
  {
@@ -231,7 +286,9 @@ export const getCommentsOfPost = async(req,res)=>
           success : false
          })
       }  
+      
      return res.status(200).json({
+        message : 'All Comments',
         success : true ,
         comments
        });                  
@@ -270,7 +327,7 @@ export const deletePost = async(req,res)=>
        await Post.findByIdAndDelete(postId);
        
        const user = await User.findById(authorId);
-       user.posts = user.posts.filter(id=id.toString()!=postId);
+       user.posts = user.posts.filter(id=>id.toString()!=postId);
        await user.save();
        
        await Comment.deleteMany({post:postId});
@@ -307,7 +364,7 @@ export const BookmarkPost = async(req,res)=>
        const user = await User.findById(authorId);
        let type,message;
        
-       if(user.bookmarks.include(post._id))
+       if(user.bookmarks.includes(post._id))
         {
           await user.updateOne({$pull:{bookmarks:post._id}});
           await user.save();

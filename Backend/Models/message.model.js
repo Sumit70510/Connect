@@ -8,4 +8,4 @@ const messageSchema = new mongoose.Schema({
     message:{type:String,required:true}
 });
 
-export default Message=mongoose.model("Message",messageSchema);
+export const Message = mongoose.model("Message",messageSchema);
