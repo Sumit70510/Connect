@@ -16,10 +16,10 @@ export const register = async(req,res)=>
             success:false
            });
          }
-        const user= await User.findOne({email});
+        const user= await User.findOne({$or: [{ email }, { username }]});
         if(user)
          {
-           return res.status(401).json({
+           return res.status(409).json({
             message:"User Already Exists",
             success:false
            }); 
@@ -51,7 +51,7 @@ export const login = async(req,res)=>
         
         if(!email||!password)
          {
-           return res.status(401).json({
+           return res.status(400).json({
             message:"Something is Missing, Please Check !",
             success:false
            });
@@ -60,7 +60,7 @@ export const login = async(req,res)=>
         
         if(!user)
          {
-           return res.status(401).json({
+           return res.status(400).json({
             message:"Incorrect Credentials",
             success:false
            }); 
@@ -68,7 +68,7 @@ export const login = async(req,res)=>
         const isPasswordMatch = await bcrypt.compare(password,user.password);
         if(!isPasswordMatch) 
          {
-           return res.status(401).json({
+           return res.status(400).json({
             message:"Incorrect Credentials",
             success:false
            });   
@@ -135,7 +135,7 @@ export const getProfile = async(req,res)=>
          let user =  await User.findById(userId).select("-password");
          if(!user)
           {
-           return res.status(401).json({
+           return res.status(400).json({
             message:"No Such User Exists",
             success:false
            }); 
