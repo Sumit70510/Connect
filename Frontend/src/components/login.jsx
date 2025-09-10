@@ -3,6 +3,8 @@ import { Button } from './ui/button.jsx';
 import {Input} from './ui/input.jsx'
 import axios from 'axios';
 import { toast } from 'sonner';
+import {Link, useNavigate} from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
 
 export default function Login() {
     
@@ -10,6 +12,8 @@ export default function Login() {
     email : "" , password : "" }); 
    
    const [loading,setloading]=useState(false);  
+   
+   const navigate = useNavigate();
    
    const changeEventHandler = (e)=>
      {
@@ -22,12 +26,13 @@ export default function Login() {
       e.preventDefault();
       try
        {
+          setloading(true);
           const res = await axios.post('/api/v1/user/login',input,{
                 headers : { "content-type" : 'application/json' },
                 withCredentials : true }); 
-          setloading(true);
           if(res.data.success)
            {
+             navigate('/');
              toast.success(res.data.message);
              setInput({username : "", email : "" , password : "" }) 
            }          
@@ -67,7 +72,17 @@ export default function Login() {
             <Input className='focus-visible:ring-transparent my-2'
              type='password' name='password'value={input.password} onChange={changeEventHandler}/> 
            </div>
-           <Button type='submit'>Login</Button>  
+            {
+             loading?(<Button>
+                       <Loader2 className='mr-2 h-4 w-4 animate-spin'/> 
+                         Please Wait...                
+                      </Button>)
+              : (<Button type='submit'>Login</Button>)
+             }  
+            <span className="text-center">
+            Doesn't Have an Account ?
+            <Link to='/signup' className='text-blue-600'> SignUp</Link>
+            </span> 
         </form>
      </div>
    )
