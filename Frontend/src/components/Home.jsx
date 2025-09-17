@@ -6,8 +6,8 @@ import Feed from './Feed.jsx';
 export default function Home() {
   return (
     <div className='flex'>
-       <Feed/>
       <div className='flex-grow'>
+        <Feed/>
         <Outlet/>
       </div> 
       <RightSidebar/>

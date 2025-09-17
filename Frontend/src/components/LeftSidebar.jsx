@@ -19,7 +19,7 @@ const sidebarItems = [
       {icon : <PlusSquare/>,
        text : "Create" },
       {icon : (
-              <Avatar>
+              <Avatar className='w-6 h-6'>
                 <AvatarImage src=""/>
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar> ),
