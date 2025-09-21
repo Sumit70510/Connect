@@ -4,8 +4,16 @@ import { AvatarFallback ,Avatar,AvatarImage} from './ui/avatar';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
-const sidebarItems = [
+export default function LeftSidebar() {
+  
+  
+  const navigate = useNavigate();
+  
+  const auth = useSelector(state => state.auth) || {};
+  const user = auth.user;
+  const sidebarItems = [
       {icon : <Home/>,
        text : "Home" },
       {icon : <Search/>,
@@ -20,8 +28,8 @@ const sidebarItems = [
        text : "Create" },
       {icon : (
               <Avatar className='w-6 h-6'>
-                <AvatarImage src=""/>
-                <AvatarFallback>CN</AvatarFallback>
+                <AvatarImage src={user?.profilePicture}/>
+                <AvatarFallback>{user?.username?.slice(0,2).toUpperCase() || "CN"}</AvatarFallback>
               </Avatar> ),
        text : "Profile" },
       {
@@ -29,10 +37,7 @@ const sidebarItems = [
        text : "Logout"
       }
     ]
-
-export default function LeftSidebar() {
   
-  const navigate = useNavigate();
 
   const logoutHandler = async()=>
    {
@@ -59,8 +64,8 @@ export default function LeftSidebar() {
     } 
     
   return (
-     <div className='flex top-0 z-10 left-0 px-4 border-r border-gray-300 w-[16%] h-screen'>
-        <div className='flex flex-col'>
+     <div className='flex top-0 z-10 left-0 px-4 border-r border-gray-300 h-screen'>
+        <div className='flex flex-col px-4 h-full'>
         <h1 className='my-8 pl-3 font-bold text-xl'>LOGO</h1>  
         <div>
           {

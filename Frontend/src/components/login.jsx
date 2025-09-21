@@ -5,6 +5,9 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import {Link, useNavigate} from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { setAuthUser } from '../Redux/authslice.js';
+
 
 export default function Login() {
     
@@ -14,42 +17,41 @@ export default function Login() {
    const [loading,setloading]=useState(false);  
    
    const navigate = useNavigate();
+   const dispatch = useDispatch();
    
    const changeEventHandler = (e)=>
      {
       setInput({...input,[e.target.name]:e.target.value})
      }  
    
-       
-   const signupHandler = async(e)=>
-    { 
-      e.preventDefault();
-      try
-       {
-          setloading(true);
-          const res = await axios.post('/api/v1/user/login',input,{
-                headers : { "content-type" : 'application/json' },
-                withCredentials : true }); 
-          if(res.data.success)
-           {
-             navigate('/');
-             toast.success(res.data.message);
-             setInput({username : "", email : "" , password : "" }) 
-           }          
-       }
-      catch(e)
-       {
-        //  console.log(e); 
-         toast.error(e.response?.data?.message || "Something Went Wrong");
-       }
-       finally
-       {
-        setloading(false); 
-       }
-    }  
+ const loginHandler = async(e) => { 
+  e.preventDefault();
+  
+  try 
+   {
+    setloading(true);
+    const res = await axios.post(
+      '/api/v1/user/login',
+      input,
+      { headers: { "Content-Type": "application/json" }, withCredentials: true }
+    ); 
+      if (res.data.success) {
+       navigate('/');
+       dispatch(setAuthUser(res.data.user));
+       toast.success(res.data.message);
+       setInput({ email: "", password: "" });
+      }
+    } catch (e) {
+    // console.error(e);
+    toast.error(e.response?.data?.message || "Something Went Wrong");
+   }finally {
+    setloading(false);
+   }
+};
+
    return (
      <div className='flex items-center w-screen h-screen justify-center'>
-        <form className='shadow-lg flex flex-col gap-5 p-8' onSubmit={signupHandler}>
+        <form className='shadow-lg flex flex-col gap-5 p-8' onSubmit={loginHandler}>
            <div className='my-4'>
              <h1 className='text-center font-bold text-xl'>
                 LOGO

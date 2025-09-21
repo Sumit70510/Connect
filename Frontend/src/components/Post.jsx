@@ -26,12 +26,14 @@ export default function Post()
        
    return (
     <div className='my-8 w-full max-w-sm mx-auto'>
-      <div className='flex items-center gap-2'>
+      <div className='flex items-center justify-between px-1 gap-2'>
+        <div className='flex items-center gap-2'> 
          <Avatar>
             <AvatarImage src="" alt='Post_image'/>
             <AvatarFallback>CN</AvatarFallback>
          </Avatar>
          <h1>Username</h1>
+         </div>
          <div className='flex items-center justify-between'>
             <Dialog>
                 <DialogTrigger asChild>
