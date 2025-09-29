@@ -4,12 +4,13 @@ import { AvatarFallback ,Avatar,AvatarImage} from './ui/avatar';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setAuthUser } from '@/Redux/authslice';
 
 export default function LeftSidebar() {
   
-  
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   
   const auth = useSelector(state => state.auth) || {};
   const user = auth.user;
@@ -48,6 +49,7 @@ export default function LeftSidebar() {
            );
         if(res.data.success)
          {
+           dispatch(setAuthUser(null));
            navigate('/login');
            toast.success(res.data.message); 
          }      

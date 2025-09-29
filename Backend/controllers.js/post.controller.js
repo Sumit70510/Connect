@@ -68,9 +68,9 @@ export const getAllPost = async(req,res)=>
  {
    try
     {
-       const posts = await Post.find().sort({createdAt:-1}).populate({path:'author',select:'username,profilePicture'})
+       const posts = await Post.find().sort({createdAt:-1}).populate({path:'author',select:'username profilePicture'})
        .populate({path:'comments',sort:{createdAt:-1},
-        populate:{path:'author', select :'username,profilePicture'}
+        populate:{path:'author', select :'username profilePicture'}
        });
        if(!posts)
          {
@@ -97,9 +97,9 @@ export const getUserPost =  async(req,res)=>
     {
       const authorId = req.id;
       const posts = await Post.find({author:authorId}).sort({createdAt:-1})
-       .populate({path:'author',select:'username,profilePicture'})
+       .populate({path:'author',select:'username profilePicture'})
        .populate({path:'comments',sort:{createdAt:-1},
-        populate:{path:'author', select :'username,profilePicture'}
+        populate:{path:'author', select :'username profilePicture'}
        });
        if(!posts)
          {
@@ -209,7 +209,7 @@ export const addComment = async(req,res)=>
          post : post._id
       })
       
-      await comment.populate({path:'author',select:'username,profilePicture'});
+      await comment.populate({path:'author',select:'username profilePicture'});
       
       post.comments.push(comment._id);
       await post.save();
@@ -277,7 +277,7 @@ export const getCommentsOfPost = async(req,res)=>
     {
      const postId = req.params.id;
      const comments = await Comment.find({post:postId})
-           .populate('author','username,profilePicture');
+           .populate('author','username profilePicture');
        
      if(!comments)
       {

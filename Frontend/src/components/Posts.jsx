@@ -1,11 +1,16 @@
 import React from 'react';
 import Post from './Post.jsx';
+import { useSelector } from 'react-redux';
 
 export default function Posts() {
+  
+  const auth = useSelector(state => state.auth) || {};
+  const user = auth.user;
+  
   return (
     <div>
       {
-        [1,2,3,4].map((item,index)=><Post key={index}/>)
+        user?.posts?.map((item,index)=><Post key={index}/>)
       }
     </div>
   )

@@ -6,10 +6,15 @@ import { Button } from './ui/button';
 import { FaHeart , FaRegHeart } from 'react-icons/fa';
 import CommentDialog from './CommentDialog.jsx';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 export default function Post() 
  {
    const [text,setText] = useState("");
    const [open,setOpen] = useState(false);
+   
+   
+  const auth = useSelector(state => state.auth) || {};
+  const user = auth.user;
    
    const changeEventHandler = (e)=>
      {
@@ -29,10 +34,10 @@ export default function Post()
       <div className='flex items-center justify-between px-1 gap-2'>
         <div className='flex items-center gap-2'> 
          <Avatar>
-            <AvatarImage src="" alt='Post_image'/>
+            <AvatarImage src={user?.profilePicture} alt='Post_image'/>
             <AvatarFallback>CN</AvatarFallback>
          </Avatar>
-         <h1>Username</h1>
+         <h1>{user?.username}</h1>
          </div>
          <div className='flex items-center justify-between'>
             <Dialog>
@@ -54,7 +59,7 @@ export default function Post()
          </div>
       </div>
       
-      <img src='https://www.pixelstalk.net/wp-content/uploads/2016/07/Desktop-hd-3d-nature-images-download.jpg'
+      <img src={user?.profilePicture}//'https://www.pixelstalk.net/wp-content/uploads/2016/07/Desktop-hd-3d-nature-images-download.jpg'
          className='rounded-sm my-2 aspect-square object-cover mx-auto'/>
       
       <div className='flex items-center justify-between my-2'>
@@ -66,9 +71,11 @@ export default function Post()
          <Bookmark className='cursor-pointer hover:text-gray-600'/>
       </div>   
       
-     <span className='font-medium block mb-2'>
-        1K Likes
-     </span> 
+     {user?.likes ? (
+         <span className='font-medium block mb-2'>
+          {user.likes.length}
+         </span> ) : null}
+         
      <p>
         <span className='font-medium mr-2'>
             Caption

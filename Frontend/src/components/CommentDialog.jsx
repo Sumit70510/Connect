@@ -4,10 +4,14 @@ import { Link } from 'react-router';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { MoreHorizontal } from 'lucide-react';
 import { Button } from './ui/button';
+import { useSelector } from 'react-redux';
 
 export default function CommentDialog({open,setOpen}) {
   
   const [text,setText]=useState("");
+  
+  const auth = useSelector(state => state.auth) || {};
+  const user = auth.user;
   
   const changeEventHandler = (e)=>
    {
@@ -33,7 +37,7 @@ export default function CommentDialog({open,setOpen}) {
             className='max-w-8xl p-0 flex flex-col w-[1000px] h-[400px]'>
            <div className='flex flex-1 h-full'>
             <div className='w-1/2 h-full'>
-              <img src='https://www.pixelstalk.net/wp-content/uploads/2016/07/Desktop-hd-3d-nature-images-download.jpg'
+              <img src={user?.profilePicture}
                 className='w-full h-full object-cover rounded-l-lg'/>
             </div> 
             <div className='w-1/2 flex flex-col justify-between'>
@@ -41,7 +45,7 @@ export default function CommentDialog({open,setOpen}) {
                 <div className='flex gap-3 items-center'>       
                 <Link>
                  <Avatar>
-                    <AvatarImage src=''/>
+                    <AvatarImage src={user?.profilePicture}/>
                     <AvatarFallback>
                         CN
                     </AvatarFallback>
@@ -49,7 +53,7 @@ export default function CommentDialog({open,setOpen}) {
                 </Link>
                  <div>
                    <Link className='font-semibold text-xs'> 
-                     Username
+                     {user?.username}
                    </Link> 
                    <span className='text-gray-600 text-sm'> Bio Here </span>
                  </div>

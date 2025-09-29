@@ -34,22 +34,21 @@ export default function Login() {
       '/api/v1/user/login',
       input,
       { headers: { "Content-Type": "application/json" }, withCredentials: true }
-    ); 
+      ); 
       if (res.data.success) {
        navigate('/');
        dispatch(setAuthUser(res.data.user));
        toast.success(res.data.message);
        setInput({ email: "", password: "" });
       }
-    } catch (e) {
+    } catch(e){
     // console.error(e);
     toast.error(e.response?.data?.message || "Something Went Wrong");
    }finally {
     setloading(false);
    }
-};
-
-   return (
+  };
+   return(
      <div className='flex items-center w-screen h-screen justify-center'>
         <form className='shadow-lg flex flex-col gap-5 p-8' onSubmit={loginHandler}>
            <div className='my-4'>
@@ -87,5 +86,5 @@ export default function Login() {
             </span> 
         </form>
      </div>
-   )
+    )
 }
