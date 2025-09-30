@@ -4,13 +4,12 @@ import { useSelector } from 'react-redux';
 
 export default function Posts() {
   
-  const auth = useSelector(state => state.auth) || {};
-  const user = auth.user;
+  const {posts} = useSelector(store=>store.post);
   
   return (
     <div>
       {
-        user?.posts?.map((item,index)=><Post key={index}/>)
+        posts?.map((post)=><Post post={post} key={post._id}/>)
       }
     </div>
   )

@@ -6,7 +6,7 @@ import { MoreHorizontal } from 'lucide-react';
 import { Button } from './ui/button';
 import { useSelector } from 'react-redux';
 
-export default function CommentDialog({open,setOpen}) {
+export default function CommentDialog({open,setOpen,post}) {
   
   const [text,setText]=useState("");
   
@@ -37,7 +37,7 @@ export default function CommentDialog({open,setOpen}) {
             className='max-w-8xl p-0 flex flex-col w-[1000px] h-[400px]'>
            <div className='flex flex-1 h-full'>
             <div className='w-1/2 h-full'>
-              <img src={user?.profilePicture}
+              <img src={post.image}
                 className='w-full h-full object-cover rounded-l-lg'/>
             </div> 
             <div className='w-1/2 flex flex-col justify-between'>
@@ -74,9 +74,11 @@ export default function CommentDialog({open,setOpen}) {
                </Dialog>
               </div>   
               <hr/>
+              {post.comments.map((comment)=>
               <div className='flex-1 overflow-y-auto max-h-96 p-4'>
-                Comments
-              </div>
+                {comment.text}
+              </div>)
+              }
               <div className='p-4'>
                 <div className='flex items-center gap-1 w-full'>
                   <input type='text' placeholder='Add a Comment........'

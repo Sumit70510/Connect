@@ -7,7 +7,7 @@ import { FaHeart , FaRegHeart } from 'react-icons/fa';
 import CommentDialog from './CommentDialog.jsx';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-export default function Post() 
+export default function Post({post}) 
  {
    const [text,setText] = useState("");
    const [open,setOpen] = useState(false);
@@ -59,8 +59,8 @@ export default function Post()
          </div>
       </div>
       
-      <img src={user?.profilePicture}//'https://www.pixelstalk.net/wp-content/uploads/2016/07/Desktop-hd-3d-nature-images-download.jpg'
-         className='rounded-sm my-2 aspect-square object-cover mx-auto'/>
+      <img src={post?.image}//'https://www.pixelstalk.net/wp-content/uploads/2016/07/Desktop-hd-3d-nature-images-download.jpg'
+         className='rounded-sm my-2 aspect-square object-contain mx-auto'/>
       
       <div className='flex items-center justify-between my-2'>
        <div className='flex items-center gap-3'>
@@ -71,21 +71,21 @@ export default function Post()
          <Bookmark className='cursor-pointer hover:text-gray-600'/>
       </div>   
       
-     {user?.likes ? (
+     {post?.likes ? (
          <span className='font-medium block mb-2'>
-          {user.likes.length}
+          {post.likes.length}
          </span> ) : null}
          
      <p>
         <span className='font-medium mr-2'>
-            Caption
+            {post.caption}
         </span>
      </p>
      <span onClick={()=>setOpen(true)} 
         className='cursor-pointer text-sm text-gray-400'>
-        View all 10 Comments
+        View all {post.comments.length} Comments
      </span>
-     <CommentDialog open={open} setOpen={setOpen}/>
+     <CommentDialog open={open} setOpen={setOpen} post={post}/>
      <div className='flex justify-between mx-2'>
         <input type='text' placeholder='Add a Comment...'
           value={text} onChange={changeEventHandler} 

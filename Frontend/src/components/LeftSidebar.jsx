@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {Heart, Home, LogOut, MessageCircle, PlusSquare, Search, TrendingUp} from 'lucide-react';
 import { AvatarFallback ,Avatar,AvatarImage} from './ui/avatar';
 import { useNavigate } from 'react-router';
@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAuthUser } from '@/Redux/authslice';
+import CreatePost from './CreatePost';
 
 export default function LeftSidebar() {
   
@@ -14,6 +15,9 @@ export default function LeftSidebar() {
   
   const auth = useSelector(state => state.auth) || {};
   const user = auth.user;
+  
+  const [open,setOpen] = useState(false);
+  
   const sidebarItems = [
       {icon : <Home/>,
        text : "Home" },
@@ -62,7 +66,14 @@ export default function LeftSidebar() {
   const sidebarHandler = (textType)=>
     {
       if(textType==='Logout')
-        logoutHandler();    
+        {logoutHandler();}
+      else
+        {
+          if(textType==='Create')
+           {
+            setOpen(true);
+           } 
+        }    
     } 
     
   return (
@@ -82,6 +93,7 @@ export default function LeftSidebar() {
           }
         </div> 
        </div>
+       <CreatePost open={open} setOpen={setOpen}/>
      </div>
   )
 }
