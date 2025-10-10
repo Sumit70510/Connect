@@ -7,6 +7,8 @@ import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { readFileAsDataURL } from '@/lib/utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPosts } from '@/Redux/postSlice';
 
 export default function CreatePost({open,setOpen}) {
    const [caption,setCaption] = useState(""); 
@@ -14,7 +16,9 @@ export default function CreatePost({open,setOpen}) {
    const [file,setFile] = useState("");
    const [imagePreview,setImagePreview] = useState("");
    const [loading,setLoading] = useState(false);
-   
+   const {user} = useSelector(store=>store.auth);
+   const {posts} = useSelector(store=>store.post);
+   const dispatch = useDispatch();
    const fileChangeHandler = async(e)=>
      {
        const File=e?.target?.files?.[0];
@@ -45,7 +49,9 @@ export default function CreatePost({open,setOpen}) {
             );
            if(res.data.success)
             {
+              dispatch(setPosts([res.data.post,...posts]));
               toast.success(res.data.message);  
+              setOpen(false);
             }  
          }  
         catch(error)
@@ -64,12 +70,12 @@ export default function CreatePost({open,setOpen}) {
         <DialogHeader className='text-center font-semibold'>Create New Post</DialogHeader> 
         <div className='flex gap-3 items-center'>
           <Avatar>
-            <AvatarImage src='' alt='img'/>
+            <AvatarImage src={user?.profilePicture} alt='img'/>
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div>
-            <h1 className='font-semibold text-xs'>Username</h1>
-            <span className='font-semibold text-xs text-gray-600'>Bio here......</span>
+            <h1 className='font-semibold text-xs'>{user?.username}</h1>
+            <span className='font-semibold text-xs text-gray-600'>{user?.bio}</span>
           </div>
         </div>  
         <Textarea value={caption} onChange={(e)=>setCaption(e.target.value)}

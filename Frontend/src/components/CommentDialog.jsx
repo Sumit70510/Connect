@@ -1,17 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
 import { Link } from 'react-router';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { MoreHorizontal } from 'lucide-react';
 import { Button } from './ui/button';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import store from '@/Redux/store';
+import Comment from './comment';
+import axios from 'axios';
+import { setPosts } from '@/Redux/postSlice';
+import { toast } from 'sonner';
 
 export default function CommentDialog({open,setOpen,post}) {
   
   const [text,setText]=useState("");
+  const {selectedPost,posts} = useSelector(store=>store.post);
+  const [comment,setComment]=useState([]);
+  const dispatch = useDispatch();
   
-  const auth = useSelector(state => state.auth) || {};
-  const user = auth.user;
+  useEffect(() => {
+  // console.log("selectedPost updated:", selectedPost);
+  if (selectedPost) {
+    setComment(selectedPost?.comments || []);
+  }
+}, [selectedPost]);
   
   const changeEventHandler = (e)=>
    {
@@ -27,9 +39,33 @@ export default function CommentDialog({open,setOpen,post}) {
    }
    
   const sendMessageHandler = async()=>
-   {
-     alert(text); 
-   }  
+     {
+        try
+         {
+           const res = await axios.post(`/api/v1/post/${selectedPost._id}/comment`,{text},
+             {
+              headers:{
+                 "Content-Type": "application/json" 
+               }, withCredentials : true
+             }
+            );
+           if(res.data.success)
+            {
+              const updatedCommentData = [...comment,res.data.comment];
+              setComment(updatedCommentData);
+              const updatedPostData =  posts.map(p=> 
+                p._id===post._id?{...p,comments:updatedCommentData}:p
+               );
+              dispatch(setPosts(updatedPostData)); 
+              setText('');
+              toast.success(res.data.message);
+            } 
+         }
+        catch(error)
+         {
+           console.log(error);
+         } 
+     }  
   
   return(
     <Dialog open={open}>
@@ -37,7 +73,7 @@ export default function CommentDialog({open,setOpen,post}) {
             className='max-w-8xl p-0 flex flex-col w-[1000px] h-[400px]'>
            <div className='flex flex-1 h-full'>
             <div className='w-1/2 h-full'>
-              <img src={post.image}
+              <img src={selectedPost?.image}
                 className='w-full h-full object-cover rounded-l-lg'/>
             </div> 
             <div className='w-1/2 flex flex-col justify-between'>
@@ -45,15 +81,15 @@ export default function CommentDialog({open,setOpen,post}) {
                 <div className='flex gap-3 items-center'>       
                 <Link>
                  <Avatar>
-                    <AvatarImage src={user?.profilePicture}/>
+                    <AvatarImage src={selectedPost?.author?.profilePicture}/>
                     <AvatarFallback>
-                        CN
+                      {selectedPost?.author?.username?.slice(0, 2)?.toUpperCase()}
                     </AvatarFallback>
                  </Avatar>
                 </Link>
                  <div>
                    <Link className='font-semibold text-xs'> 
-                     {user?.username}
+                     {selectedPost?.author?.username}
                    </Link> 
                    <span className='text-gray-600 text-sm'> Bio Here </span>
                  </div>
@@ -74,18 +110,19 @@ export default function CommentDialog({open,setOpen,post}) {
                </Dialog>
               </div>   
               <hr/>
-              {post.comments.map((comment)=>
               <div className='flex-1 overflow-y-auto max-h-96 p-4'>
-                {comment.text}
-              </div>)
-              }
+                 { selectedPost?.comments.map((comment)=>
+                     <Comment key={comment._id} comment={comment}/>
+                    )   
+                 }
+              </div>
               <div className='p-4'>
                 <div className='flex items-center gap-1 w-full'>
                   <input type='text' placeholder='Add a Comment........'
                     onChange={changeEventHandler}
                     value={text} className='outline-none text-sm flex-1 min-w-0'/>
                   <Button disabled={!text.trim()} onClick={sendMessageHandler} 
-                    variant='outline' className='flex-shrink-0' >Send</Button>
+                    variant='outline' className='flex-shrink-0 cursor-pointer' >Send</Button>
                 </div>
               </div>
             </div>   

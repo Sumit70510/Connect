@@ -13,7 +13,7 @@ router.route('/:id/dislike').get(isAuthenticated,dislikePost);
 router.route('/:id/comment').post(isAuthenticated,addComment);
 router.route('/:id/comment/:cid/del').post(isAuthenticated,delComment);
 router.route('/:id/comment/all').post(isAuthenticated,getCommentsOfPost);
-router.route('/delete/:id').post(isAuthenticated,deletePost);
+router.route('/delete/:id').delete(isAuthenticated,deletePost);
 router.route('/:id/bookmark').post(isAuthenticated,BookmarkPost);
 
 export default router;

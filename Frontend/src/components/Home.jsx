@@ -5,7 +5,7 @@ import Feed from './Feed.jsx';
 import useGetAllPost from '@/Hooks/useGetAllPost.jsx';
 
 export default function Home() {
-  // useGetAllPost();
+  useGetAllPost();
   return (
     <div className='flex'>
       <div className='flex-grow'>
