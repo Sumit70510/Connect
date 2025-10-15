@@ -132,7 +132,7 @@ export const getProfile = async(req,res)=>
       try
        {
          const userId=req.params.id;
-         let user =  await User.findById(userId).select("-password");
+         let user =  await User.findById(userId).select("-password").populate({path:'posts',createdAt:-1});
          if(!user)
           {
            return res.status(400).json({
@@ -195,7 +195,7 @@ export const getSuggestedUsers = async (req,res) =>
      try
       {
         const suggestedUsers = await User.find({_id:{$ne:req.id}}).select("-password");
-        if(!suggestedUsers)
+        if(suggestedUsers.length===0)
          {
            return res.status(400).json({
              message : "Currently Don't Have Any Suggested Users",

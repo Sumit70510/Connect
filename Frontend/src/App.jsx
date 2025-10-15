@@ -24,6 +24,10 @@ const browserRouter = createBrowserRouter([
     ,{
       path    :'/signup',
       element : <Signup/> 
+     },
+     {
+       path  :'/profile/:id',
+       element : <Profile/>
      }   
  ])
 

@@ -1,11 +1,12 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import RightSidebar from './RightSidebar.jsx';
 import Feed from './Feed.jsx';
 import useGetAllPost from '@/Hooks/useGetAllPost.jsx';
+import useGetSuggestedUsers from '@/Hooks/useGetSuggestedUsers.jsx';
 
 export default function Home() {
   useGetAllPost();
+  useGetSuggestedUsers();
   return (
     <div className='flex'>
       <div className='flex-grow'>

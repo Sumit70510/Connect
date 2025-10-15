@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import store from '@/Redux/store';
 import Comment from './comment';
 import axios from 'axios';
-import { setPosts } from '@/Redux/postSlice';
+import { setPosts, setSelectedPost } from '@/Redux/postSlice';
 import { toast } from 'sonner';
 
 export default function CommentDialog({open,setOpen,post}) {
@@ -56,6 +56,12 @@ export default function CommentDialog({open,setOpen,post}) {
               const updatedPostData =  posts.map(p=> 
                 p._id===post._id?{...p,comments:updatedCommentData}:p
                );
+              const updatedSelectedPost = {
+              ...selectedPost,
+             comments: updatedCommentData,
+              };
+              dispatch(setSelectedPost(updatedSelectedPost));
+ 
               dispatch(setPosts(updatedPostData)); 
               setText('');
               toast.success(res.data.message);

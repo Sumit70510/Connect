@@ -14,7 +14,7 @@ export default function MainLayout() {
           <Outlet />
         </div>
       </div>
-      <div className="w-[16%] fixed right-0 top-0 h-screen border-l hidden lg:block">
+      <div className="w-[18%] fixed right-0 top-0 h-screen border-l hidden lg:block">
         <RightSidebar />
       </div>
     </div>

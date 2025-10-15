@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { setPosts, setSelectedPost } from '@/Redux/postSlice';
+import { Badge } from './ui/badge';
 export default function Post({post}) 
  {
    const [text,setText] = useState("");
@@ -17,9 +18,9 @@ export default function Post({post})
    const {user} = useSelector(store=>store.auth);
    const {posts} = useSelector(store=>store.post);
    const dispatch = useDispatch();
-   const [postLike , setPostLike] = useState(post.likes.length);
-   const [liked,setLiked] = useState(post.likes.includes(user?._id)||false);
-   const [comment,setComment] = useState(post.comments);
+   const [postLike , setPostLike] = useState(post?.likes?.length);
+   const [liked,setLiked] = useState(post?.likes?.includes(user?._id)||false);
+   const [comment,setComment] = useState(post?.comments);
    
    const changeEventHandler = (e)=>
      {
@@ -38,7 +39,7 @@ export default function Post({post})
      {
         try
          {
-           const res = await axios.post(`/api/v1/post/${post._id}/comment`,{text},
+           const res = await axios.post(`/api/v1/post/${post?._id}/comment`,{text},
              {
               headers:{
                  "Content-Type": "application/json" 
@@ -50,7 +51,7 @@ export default function Post({post})
               const updatedCommentData = [...comment,res.data.comment];
               setComment(updatedCommentData);
               const updatedPostData =  posts.map(p=> 
-                p._id===post._id?{...p,comments:updatedCommentData}:p
+                p?._id===post?._id?{...p,comments:updatedCommentData}:p
                );
               dispatch(setPosts(updatedPostData)); 
               setText('');
@@ -118,6 +119,7 @@ export default function Post({post})
             <AvatarFallback>{post?.author?.username?.slice(0, 2)?.toUpperCase()}</AvatarFallback>
          </Avatar>
          <h1>{post?.author?.username}</h1>
+         {user?._id===post?.author?._id&&<Badge variant='secondary'>Author</Badge>}
          </div>
          <div className='flex items-center justify-between'>
             <Dialog>
@@ -163,16 +165,16 @@ export default function Post({post})
          
      <p>
         <span className='font-medium mr-2'>
-         {post.author.username}
+         {post?.author?.username}
         </span>
-         {post.caption}
+         {post?.caption}
      </p>
      <span  onClick={()=>{
             dispatch(setSelectedPost(post));
             setOpen(true);
          }}
         className='cursor-pointer text-sm text-gray-400'>
-        {post.comments.length?`View all ${post.comments.length} Comments`:""}
+        {post?.comments?.length?`View all ${post?.comments?.length} Comments`:""}
      </span>
      <CommentDialog open={open} setOpen={setOpen} post={post}/>
      <div className='flex justify-between mx-2'>

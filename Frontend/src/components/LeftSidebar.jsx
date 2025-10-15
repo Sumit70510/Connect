@@ -76,12 +76,19 @@ export default function LeftSidebar() {
            {
             setOpen(true);
            } 
+          else
+           {
+             if(textType==='Profile')
+             {
+              navigate(`/profile/${user._id}`);
+             }
+           } 
         }    
     } 
     
   return (
-     <div className='flex top-0 z-10 left-0 px-4 border-r border-gray-300 h-screen'>
-        <div className='flex flex-col px-4 h-full'>
+     <div className='flex top-0 z-10 left-0 px-4 border-r border-gray-300 h-screen overflow-y-auto'>
+        <div className='flex flex-col px-4 h-full '>
         <h1 className='my-8 pl-3 font-bold text-xl'>LOGO</h1>  
         <div>
           {
@@ -89,7 +96,7 @@ export default function LeftSidebar() {
                return(
                 <div key={index} className="flex items-center gap-3 relative hover:bg-gray-200 cursor-pointer
                     rounded-lg p-3 my-3" onClick={()=>sidebarHandler(item.text)}>
-                 {item.icon}
+                 <div className="w-6 h-6">{item.icon}</div>
                  <span>{item.text}</span> 
                 </div>   
             )})
