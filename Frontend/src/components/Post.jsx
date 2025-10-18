@@ -143,16 +143,17 @@ export default function Post({post})
       </div>
       
       <img src={post?.image}//'https://www.pixelstalk.net/wp-content/uploads/2016/07/Desktop-hd-3d-nature-images-download.jpg'
-         className='rounded-sm my-2 aspect-square object-contain mx-auto'/>
+         className='rounded-sm my-2 aspect-square object-contain mx-auto cursor-pointer'
+         onClick={()=>{dispatch(setSelectedPost(post));setOpen(true);}} />
       
       <div className='flex items-center justify-between my-2'>
        <div className='flex items-center gap-3'>
          {liked?<FaHeart size={'22px'} className='cursor-pointer text-red-600' onClick={likeOrDislikeHandler}/>
            :<FaRegHeart size={'22px'} onClick={likeOrDislikeHandler}/>}
-         <MessageCircle onClick={()=>{
+         <MessageCircle onClick = { () => {
             dispatch(setSelectedPost(post));
             setOpen(true);
-         }} className='cursor-pointer hover:text-gray-600'/>
+            }} className='cursor-pointer hover:text-gray-600'/>
          <Send className='cursor-pointer hover:text-gray-600'/>
        </div>
          <Bookmark className='cursor-pointer hover:text-gray-600'/>

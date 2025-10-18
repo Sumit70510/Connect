@@ -9,8 +9,8 @@ export default function MainLayout() {
       <div className="w-[16%] fixed left-0 top-0 h-screen border-r">
         <LeftSidebar />
       </div>
-      <div className="flex-1 px-[16%] flex justify-center">
-        <div className="w-full max-w-[600px]">
+      <div className="flex-1 flex justify-center">
+        <div className="w-full max-w-[750px]">
           <Outlet />
         </div>
       </div>

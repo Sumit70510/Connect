@@ -3,7 +3,7 @@ import React from 'react'
 
 export default function Comment({comment}) {
   return (
-    <div className='my-1'> 
+    <div className='my-1 py-1'> 
       <div className='flex gap-2 items-center'>
         <Avatar>
             <AvatarImage src={comment?.author?.profilePicture}/>

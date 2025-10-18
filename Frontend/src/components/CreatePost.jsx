@@ -51,11 +51,15 @@ export default function CreatePost({open,setOpen}) {
             {
               dispatch(setPosts([res.data.post,...posts]));
               toast.success(res.data.message);  
+              setImagePreview("");
+              setCaption("");
               setOpen(false);
             }  
          }  
         catch(error)
          {
+           setImagePreview("");
+           setCaption("");
            toast.error(error.response.data.message);
          }
         finally

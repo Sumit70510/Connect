@@ -15,7 +15,7 @@ export default function SuggestedUsers() {
           Suggested Fou You
          </h1>
          <span className='font-medium cursor-pointer'>
-           {" "}See All
+           See All
          </span>     
        </div>
       {

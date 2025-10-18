@@ -61,7 +61,6 @@ export default function CommentDialog({open,setOpen,post}) {
              comments: updatedCommentData,
               };
               dispatch(setSelectedPost(updatedSelectedPost));
- 
               dispatch(setPosts(updatedPostData)); 
               setText('');
               toast.success(res.data.message);
@@ -74,16 +73,20 @@ export default function CommentDialog({open,setOpen,post}) {
      }  
   
   return(
-    <Dialog open={open}>
-        <DialogContent onInteractOutside={()=>setOpen(false)}
-            className='max-w-8xl p-0 flex flex-col w-[1000px] h-[400px]'>
+   <Dialog 
+  open={open} className='p-0 border-none'>
+  <DialogContent 
+    onInteractOutside={() => setOpen(false)}
+    style={{ width: '900px', maxWidth: 'none', height: '600px' }}
+    className="p-0 flex flex-col border-none !w-[950px] h-[600px] max-w-none"
+  >
            <div className='flex flex-1 h-full'>
             <div className='w-1/2 h-full'>
               <img src={selectedPost?.image}
-                className='w-full h-full object-cover rounded-l-lg'/>
+                className='w-full h-full bg-black object-contain rounded-l-lg'/>
             </div> 
-            <div className='w-1/2 flex flex-col justify-between'>
-              <div className='flex items-center justify-between px-4 py-1'>
+            <div className='w-1/2 flex flex-col'>
+              <div className='flex items-center justify-between px-4 p-4'>
                 <div className='flex gap-3 items-center'>       
                 <Link>
                  <Avatar>
@@ -97,10 +100,9 @@ export default function CommentDialog({open,setOpen,post}) {
                    <Link className='font-semibold text-xs'> 
                      {selectedPost?.author?.username}
                    </Link> 
-                   <span className='text-gray-600 text-sm'> Bio Here </span>
+                   <span className='text-gray-600 text-sm'> {selectedPost?.author?.bio} </span>
                  </div>
-                </div>
-              
+                </div> 
               <Dialog>
                 <DialogTrigger asChild>
                   <MoreHorizontal className='cursor-pointer'/>
@@ -116,13 +118,13 @@ export default function CommentDialog({open,setOpen,post}) {
                </Dialog>
               </div>   
               <hr/>
-              <div className='flex-1 overflow-y-auto max-h-96 p-4'>
-                 { selectedPost?.comments.map((comment)=>
+              <div className='flex-1 overflow-y-auto max-h-auto p-4'>
+                 { selectedPost?.comments?.map((comment)=>
                      <Comment key={comment._id} comment={comment}/>
                     )   
                  }
               </div>
-              <div className='p-4'>
+              <div className='p-4 mt-auto'>
                 <div className='flex items-center gap-1 w-full'>
                   <input type='text' placeholder='Add a Comment........'
                     onChange={changeEventHandler}

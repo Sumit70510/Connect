@@ -68,22 +68,20 @@ export default function LeftSidebar() {
    
   const sidebarHandler = (textType)=>
     {
-      if(textType==='Logout')
-        {logoutHandler();}
-      else
-        {
-          if(textType==='Create')
-           {
-            setOpen(true);
-           } 
-          else
-           {
-             if(textType==='Profile')
-             {
-              navigate(`/profile/${user._id}`);
-             }
-           } 
-        }    
+      switch(textType) 
+       {
+         case 'Logout':
+           logoutHandler(); break;
+         case 'Create':
+           setOpen(true);   break;
+         case 'Home':
+           navigate('/');   break;
+         case 'Profile':
+           navigate(`/profile/${user._id}`); break;
+         default:
+           // Handle other cases if needed
+          break;
+       }
     } 
     
   return (
