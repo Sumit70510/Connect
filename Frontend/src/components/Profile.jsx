@@ -11,10 +11,10 @@ export default function Profile() {
   const params = useParams();
   const userId = params.id;
   useGetUserProfile(userId);
-  const isLoggedInUserProfile = user?._id===userProfile?._id;
   const isFollowing = true;
   const { userProfile , user } = useSelector((store) => store.auth);
   const [activeTab,setActiveTab] = useState('POSTS');
+  const isLoggedInUserProfile = user?._id===userProfile?._id;
   
   const handleTabChange = (tab) => 
    {
@@ -122,7 +122,7 @@ export default function Profile() {
   
    <div className="grid grid-cols-3 gap-3">
      {
-      displayedPost.slice().reverse().map((post)=>{
+      displayedPost?.slice()?.reverse()?.map((post)=>{
         return(
           <div key={post?._id} className="relative group cursor-pointer">
             <img src={post.image} alt='Post Image' className='rounded-sm my-2 w-full aspect-square object-cover'/>
@@ -149,3 +149,5 @@ export default function Profile() {
 </div>
   );
 }
+
+

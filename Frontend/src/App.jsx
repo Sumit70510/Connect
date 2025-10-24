@@ -6,6 +6,7 @@ import Home from './components/Home.jsx';
 import Profile from './components/Profile.jsx';
 import { RouterProvider } from 'react-router-dom';
 import EditProfile from './components/EditProfile.jsx';
+import ChatPage from './components/ChatPage.jsx';
 const browserRouter = createBrowserRouter([
      {
       path     : '/',
@@ -17,7 +18,16 @@ const browserRouter = createBrowserRouter([
          ,{
            path : '/profile/:id' ,
            element : <Profile/>
-          } ] }
+          },
+           {
+           path  :'/account/edit',
+           element : <EditProfile/>
+           },
+           {
+            path  :'/chat',
+            element : <ChatPage/>
+           }    
+        ] }
     ,{
       path    : '/login',
       element : <Login/> }
@@ -25,10 +35,11 @@ const browserRouter = createBrowserRouter([
       path    :'/signup',
       element : <Signup/> 
      },
-     {
-       path  :'/account/edit',
-       element : <EditProfile/>
-     }   
+         {
+          path  :'/chat',
+          element : <ChatPage/>
+          }
+     
  ])
 
 function App() {

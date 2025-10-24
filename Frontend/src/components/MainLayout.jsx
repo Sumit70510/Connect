@@ -6,15 +6,20 @@ import RightSidebar from './RightSidebar';
 export default function MainLayout() {
   return (
     <div className="min-h-screen flex">
-      <div className="w-[16%] fixed left-0 top-0 h-screen border-r">
+      {/* Left Sidebar */}
+      <div className="w-[16%] overflow-x-auto fixed top-0 left-0 min-w-[200px] max-w-[250px] h-screen border-r">
         <LeftSidebar />
       </div>
-      <div className="flex-1 flex justify-center">
-        <div className="w-full max-w-[750px]">
+
+      {/* Center Content */}
+      <div className="flex-1 flex justify-center ml-[16%] lg:mr-[18%] overflow-x-auto">
+        <div className="w-full">
           <Outlet />
         </div>
       </div>
-      <div className="w-[18%] fixed right-0 top-0 h-screen border-l hidden lg:block">
+
+      {/* Right Sidebar */}
+      <div className="w-[18%] fixed top-0 right-0 min-w-[220px] max-w-[300px] h-screen border-l hidden lg:block">
         <RightSidebar />
       </div>
     </div>

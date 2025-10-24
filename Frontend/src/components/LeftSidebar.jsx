@@ -78,6 +78,8 @@ export default function LeftSidebar() {
            navigate('/');   break;
          case 'Profile':
            navigate(`/profile/${user._id}`); break;
+         case 'Messages':
+           navigate('/chat'); break;
          default:
            // Handle other cases if needed
           break;
