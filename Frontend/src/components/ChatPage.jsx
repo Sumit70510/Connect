@@ -11,6 +11,7 @@ export default function ChatPage() {
   const {user,suggestedUsers, selectedUser} = useSelector(store=>store.auth);  
   const dispatch = useDispatch();
   const [selected,setSelected] = useState("");
+  const {onlineUsers} = useSelector(store=>store.chat);
   const isOnline = true;
   return (
     <div className='flex w-full overflow-x-scroll m-0 p-1 h-screen'>
