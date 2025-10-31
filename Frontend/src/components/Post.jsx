@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import axios from 'axios';
 import { setPosts, setSelectedPost } from '@/Redux/postSlice';
 import { Badge } from './ui/badge';
+
 export default function Post({post}) 
  {
    const [text,setText] = useState("");
@@ -110,6 +111,24 @@ export default function Post({post})
          }   
      }  
      
+   const bookmarkHandler = async()=>
+    {
+      try
+       {
+         const res = await axios.get(`/api/v1/post/${post?._id}/bookmark`,
+          {withCredentials:true}
+          );
+         if(res.data.success)
+          {
+            toast.success(res.data.message);
+          }
+       }
+      catch(error)
+       {
+        console.log(error);
+       }  
+    } 
+     
    return (
     <div className='my-8 w-full max-w-sm mx-auto'>
       <div className='flex items-center justify-between px-1 gap-2'>
@@ -156,7 +175,7 @@ export default function Post({post})
             }} className='cursor-pointer hover:text-gray-600'/>
          <Send className='cursor-pointer hover:text-gray-600'/>
        </div>
-         <Bookmark className='cursor-pointer hover:text-gray-600'/>
+         <Bookmark onClick={bookmarkHandler} className='cursor-pointer hover:text-gray-600'/>
       </div>   
       
      {post?.likes ? (

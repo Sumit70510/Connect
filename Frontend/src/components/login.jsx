@@ -1,11 +1,11 @@
-import React,{useState} from 'react';
+import React,{useEffect, useState} from 'react';
 import { Button } from './ui/button.jsx';
 import {Input} from './ui/input.jsx'
 import axios from 'axios';
 import { toast } from 'sonner';
 import {Link, useNavigate} from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setAuthUser } from '../Redux/authslice.js';
 
 
@@ -18,6 +18,7 @@ export default function Login() {
    
    const navigate = useNavigate();
    const dispatch = useDispatch();
+   const {user} = useSelector(store=>store.auth);
    
    const changeEventHandler = (e)=>
      {
@@ -48,6 +49,16 @@ export default function Login() {
     setloading(false);
    }
   };
+  
+  useEffect(()=>
+     {
+      if(user)
+       {
+         navigate('/');
+       }  
+     }
+     ,[]);
+  
    return(
      <div className='flex items-center w-screen h-screen justify-center'>
         <form className='shadow-lg flex flex-col gap-5 p-8' onSubmit={loginHandler}>

@@ -7,7 +7,7 @@ import SuggestedUsers from './SuggestedUsers';
 export default function RightSidebar() {
   const {user} = useSelector(state=>state.auth);
   return (
-    <div className='w-fit my-10 p-2 pl-6'>
+    <div className='w-fit my-10 p-2 pl-6 pr-6'>
       <div className='flex items-center gap-2'>
          <Link to={`/profile/${user?._id}`}>
           <Avatar>

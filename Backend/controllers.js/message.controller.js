@@ -1,5 +1,6 @@
 import { Conversation } from "../Models/conversation.model.js";
 import { Message } from "../Models/message.model.js"
+import { getRecieverSocketId, io } from "../socket/socket.js";
 
 export const sendMessage = async (req,res)=>
  {
@@ -22,6 +23,12 @@ export const sendMessage = async (req,res)=>
       await Promise.all([conversation.save(),newMessage.save()]);
       
       //Implement socket.io for real time data Transfer
+      const recieverSocketId = getRecieverSocketId(recieverId);
+      
+      if(recieverSocketId)
+       {
+         io.to(recieverSocketId).emit('newMessage',newMessage);
+       }
       
       return res.status(201).json({
         success : true,
@@ -42,12 +49,12 @@ export const getMessage = async(req,res)=>
        const senderId=req.params.id;
        const recieverId=req.id;
        const conversation = await Conversation.findOne({participants:{$all:[senderId,recieverId]}})
-                            .populate({
-                             path: "messages",
-                             populate: {
-                                path: "senderId", 
-                                select: "username , profilePicture"
-                                   } });
+                            .populate("messages");
+                            //  path: "messages",
+                            //  populate: {
+                            //     path: "senderId", 
+                            //     select: "username , profilePicture"
+                            //        } });
        
        if(!conversation)
         { return res.status(200).json({

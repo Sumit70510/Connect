@@ -7,6 +7,7 @@ import userRoutes from './routes/user.routes.js';
 import postRoutes from './routes/post.routes.js';
 import messageRoutes from './routes/message.routes.js';
 import { app,server,io } from './socket/socket.js';
+import path from 'path';
 
 dotenv.config();
 app.use(express.json());
@@ -14,9 +15,11 @@ app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
 
 const corsOption={
-    origin : 'http://localhost:5173',
-    credentials : true 
+    origin : 'http://localhost:3000',
+    credentials : true  
 }
+
+const __dirname=path.resolve();
 
 app.use(cors(corsOption));
 const PORT=process.env.PORT||3000;
@@ -31,6 +34,12 @@ app.get("/",(req,res)=>{
 app.use('/api/v1/user',userRoutes);
 app.use('/api/v1/post',postRoutes);
 app.use('/api/v1/message',messageRoutes);
+
+app.use(express.static(path.join(__dirname,'/Frontend/dist')));
+
+// app.get('*',(req,res)=>{
+//     res.sendFile(path.resolve(__dirname,"Frontend","dist","index.html"))
+// });
 
 server.listen(PORT,()=>{
     connectDB();

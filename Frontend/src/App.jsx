@@ -12,48 +12,61 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { setSocket } from './Redux/socketSlice.js';
 import { setOnlineUsers } from './Redux/chatSlice.js';
-
+import { setLikeNotification } from './Redux/rtnSlice.js';
+import ProtectedRoutes from './components/ProtectedRoutes.jsx';
 const browserRouter = createBrowserRouter([
      {
       path     : '/',
-      element  : <MainLayout/>,
+      element  : <ProtectedRoutes>
+                   <MainLayout/>
+                 </ProtectedRoutes>,
       children : [
           {
            path : '/',
-           element : <Home/>}
+           element : 
+                    <ProtectedRoutes>
+                      <Home/> 
+                    </ProtectedRoutes>
+          }
          ,{
            path : '/profile/:id' ,
-           element : <Profile/>
+           element : 
+                    <ProtectedRoutes>
+                      <Profile/>
+                    </ProtectedRoutes>
           },
            {
            path  :'/account/edit',
-           element : <EditProfile/>
+           element : 
+                   <ProtectedRoutes> 
+                     <EditProfile/>
+                   </ProtectedRoutes>
            },
            {
             path  :'/chat',
-            element : <ChatPage/>
+            element : 
+                    <ProtectedRoutes>
+                      <ChatPage/>
+                    </ProtectedRoutes>
            }    
-        ] }
+      ]}
     ,{
       path    : '/login',
       element : <Login/> }
     ,{
       path    :'/signup',
       element : <Signup/> 
-     },
-         {
-          path  :'/chat',
-          element : <ChatPage/>
-          }
-     
- ])
+     },      
+  ]);
 
 function App() {
   
   const {user} = useSelector(store=>store.auth);
   const dispatch = useDispatch();
+  const {socket} = useSelector(store=>store.socketio);
   
-  useEffect(()=>{
+  useEffect(()=>
+  {
     if(user)
      {
        const socketio = io('http://localhost:8000',
@@ -62,21 +75,34 @@ function App() {
          } ,
          transports : ['websocket']
        });
+       
        dispatch(setSocket(socketio));
        socketio.on('getOnlineUsers',(onlineUsers)=>{
          dispatch(setOnlineUsers(onlineUsers));
        });
-      } 
-     return () => {
-       if(socketio) 
-        {
-         socketio.off('getOnlineUsers'); 
-         socketio.close(); 
+       
+       socketio.on('notification',(notification)=>{
+        dispatch();
+       });
+       
+       return () => {
+        socketio.off('getOnlineUsers'); 
+           socketio.close(); 
+           dispatch(setSocket(null));
+          }
+      }
+    else
+      if(socket)
+       {  
+         return () => {
+         socket.off('getOnlineUsers'); 
+         socket.close(); 
          dispatch(setSocket(null));
-        } 
-      };
-  },[user,dispatch]);
-  
+          }
+       } 
+   },[user,dispatch]);
+   
+   
   return (
     <>
       <RouterProvider router={browserRouter} />
@@ -84,4 +110,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

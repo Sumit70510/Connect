@@ -2,8 +2,16 @@ import React from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Link } from 'react-router'
 import { Button } from './ui/button'
+import { useSelector } from 'react-redux'
+import useGetAllMessage from '@/Hooks/useGetAllMessage'
+import useGetRTM from '@/Hooks/useGetRTM'
 
 export default function Messages({selectedUser}) {
+  useGetAllMessage();
+  useGetRTM();
+  const {user} = useSelector(store=>store.auth);
+  const {messages} = useSelector(store=>store.chat);
+  console.log(messages);
   return (
     <div className='overflow-y-auto flex-1 p-4'>
       <div className='flex justify-center'>
@@ -24,11 +32,12 @@ export default function Messages({selectedUser}) {
       </div>
       <div className='flex flex-col gap-3'>
         {
-           [1,2,3,4].map((message)=>{
+           Array.isArray(messages) && messages.map((msg)=>{
             return(
-              <div className='flex'>
-                <div>
-                  {message}
+              <div key={msg?._id} className={`flex ${msg?.senderId===user?._id?'justify-end':'justify-start'}`}>
+                <div className={`p-2 rounded-lg max-w-xs break-words 
+                  ${msg?.senderId===user?._id?'bg-blue-500 text-white':'bg-gray-200 text-black'}`}>
+                  {msg?.message}
                  </div>   
               </div>      
             )

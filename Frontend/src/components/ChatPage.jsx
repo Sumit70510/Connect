@@ -1,29 +1,72 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { setSelectedUser } from '@/Redux/authslice';
 import { MessageCircleCode } from 'lucide-react';
 import Messages from './Messages';
 import { Button } from './ui/button';
+import axios from 'axios';
+import { setMessages } from '@/Redux/chatSlice';
+import { toast } from 'sonner';
 
 
-export default function ChatPage() {  
+export default function ChatPage() 
+ {  
   const {user,suggestedUsers, selectedUser} = useSelector(store=>store.auth);  
   const dispatch = useDispatch();
   const [selected,setSelected] = useState("");
-  const {onlineUsers} = useSelector(store=>store.chat);
-  const isOnline = true;
+  const [textMessage,setTextMessage] = useState("");
+  const {onlineUsers,messages} = useSelector(store=>store.chat);
+  
+  const sendMessageHandler = async(recieverId) =>
+   {
+     if (!textMessage.trim()) {
+      toast.error('Message cannot be empty');
+      return;
+       }
+     try
+      {
+        const res = await axios.post(`/api/v1/message/send/${recieverId}`,
+           { message: textMessage },
+             {
+              headers : {
+              'Content-Type' : 'application/json'
+              } , withCredentials : true 
+             }
+           );
+        if(res.data.success)
+         {
+dispatch(setMessages([...(Array.isArray(messages) ? messages : []), res.data.newMessage]));
+           setTextMessage("");
+         }   
+      }  
+     catch(error)
+      {
+        console.log(error);
+        toast.error(error.response?.data?.message || 'Failed to send message');
+      } 
+   }
+  
+  useEffect(()=>{
+       return ()=>
+        {
+          dispatch(setSelectedUser(null));
+          setTextMessage("");
+        }
+    },[]); 
+   
   return (
-    <div className='flex w-full overflow-x-scroll m-0 p-1 h-screen'>
+    <div className='flex w-full overflow-hidden m-0 p-1 h-screen'>
        <section className='w-full md:w-1/4 my-8'>
          <h1 className='font-bold mb-4 px-3 text-xl'>
             {user?.username}
          </h1>
          <hr className='mb-4 border-gray-300'/>
-         <div className='overflow-y-auto h-[80vh]'>
+         <div className='overflow-y-hidden h-[80vh]'>
             {
-              suggestedUsers.map((suggestedUser)=>
+              suggestedUsers?.map((suggestedUser)=>
                 {
+                  const isOnline = onlineUsers?.includes(suggestedUser?._id);
                   return (
                     <div className='flex gap-3 items-center p-3 hover:bg-gray-300 cursor-pointer' 
                       onClick={()=>{dispatch(setSelectedUser(suggestedUser));setSelected(suggestedUser);}}>
@@ -43,7 +86,7 @@ export default function ChatPage() {
        </section>
        
        {
-         selected!==''&&selectedUser?(
+         selectedUser ? (
             <section className='flex flex-col flex-1 h-full justify-between border-l border-l-gray-300'>
               <div className='flex gap-3 items-center px-3 py-2 mt-1 sticky top-0 border-b border-gray-300 bg-white'>
                 <Avatar className='w-14 h-14'>
@@ -58,13 +101,14 @@ export default function ChatPage() {
               </div>  
                 <Messages selectedUser={selectedUser}/>    
                 <div className='flex items-center py-4 border-t-gray-300'>
-                   <input type='text' className='flex-1 ml-2 mr-2 focus-visible:ring-transparent' placeholder='Messages.......'/> 
-                   <Button className='mr-1'>Send</Button> 
+                   <input type='text' value={textMessage} onChange={(e)=>setTextMessage(e.target.value)} 
+                    className='flex-1 ml-2 mr-2 focus-visible:ring-transparent' placeholder='Type Your Message Here...'/> 
+                   <Button onClick={()=>sendMessageHandler(selectedUser?._id)} className='mr-1'>Send</Button> 
                 </div>       
             </section>
          ) :
          (
-           <div className='flex flex-col items-center justify-center mx-auto'>
+           <div className='flex flex-col flex-1 items-center justify-center mx-auto'>
              <MessageCircleCode className='w-32 h-32 my-4'/>
              <h1 className='font-medium text-xl'>Your Messages</h1>
              <span>Send a Message To Start Chat</span>
