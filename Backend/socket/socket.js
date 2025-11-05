@@ -7,7 +7,7 @@ const server = http.createServer(app);
  
 const io = new Server(server , {
      cors : {
-        origin : 'https://instagram-ajpd.onrender.com',
+        origin : '*',
         methods : ['GET','POST']
      }
 } );

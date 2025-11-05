@@ -17,7 +17,7 @@ export default defineConfig({
     // port: 3000,
     proxy: {
       "/api": {
-        target: "https://instagram-ajpd.onrender.com", 
+        target: "https://localhost:3000", 
         changeOrigin: true,
       },
     },
