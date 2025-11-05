@@ -19,7 +19,7 @@ const corsOption={
     credentials : true  
 }
 
-// const __dirname=path.resolve(); 
+const __dirname=path.resolve(); 
 
 app.use(cors(corsOption));
 const PORT=process.env.PORT||3000;
@@ -29,18 +29,18 @@ app.use('/api/v1/user',userRoutes);
 app.use('/api/v1/post',postRoutes);
 app.use('/api/v1/message',messageRoutes);
 
-// app.use(express.static(path.join(__dirname, './Frontend/dist')));
+app.use(express.static(path.join(__dirname, './Frontend/dist')));
 
-// app.use((req, res) => {
-//     res.sendFile(path.resolve(__dirname, './Frontend/dist', 'index.html'));
-// });
-
-app.get("/",(req,res)=>{
-    return res.status(200).json({
-        message :'I\'m Coming From Backend',
-        success : true
-    })
+app.use((req, res) => {
+    res.sendFile(path.resolve(__dirname, './Frontend/dist', 'index.html'));
 });
+
+// app.get("/",(req,res)=>{
+//     return res.status(200).json({
+//         message :'I\'m Coming From Backend',
+//         success : true
+//     })
+// });
 
 server.listen(PORT, () => {
   connectDB();
