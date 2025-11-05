@@ -201,7 +201,7 @@ export const dislikePost = async(req,res)=>
          // emit a notification
          const notification = 
            {
-              type : 'disLike',
+              type : 'dislike',
               userId : dislikeUserAction,
               userDetails : user,
               postId ,

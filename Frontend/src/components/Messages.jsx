@@ -11,7 +11,7 @@ export default function Messages({selectedUser}) {
   useGetRTM();
   const {user} = useSelector(store=>store.auth);
   const {messages} = useSelector(store=>store.chat);
-  console.log(messages);
+  // console.log(messages);
   return (
     <div className='overflow-y-auto flex-1 p-4'>
       <div className='flex justify-center'>
@@ -35,7 +35,7 @@ export default function Messages({selectedUser}) {
            Array.isArray(messages) && messages.map((msg)=>{
             return(
               <div key={msg?._id} className={`flex ${msg?.senderId===user?._id?'justify-end':'justify-start'}`}>
-                <div className={`p-2 rounded-lg max-w-xs break-words 
+                <div className={`p-2 rounded-lg max-w-xs break-word
                   ${msg?.senderId===user?._id?'bg-blue-500 text-white':'bg-gray-200 text-black'}`}>
                   {msg?.message}
                  </div>   

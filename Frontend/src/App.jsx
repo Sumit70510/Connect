@@ -14,13 +14,15 @@ import { setSocket } from './Redux/socketSlice.js';
 import { setOnlineUsers } from './Redux/chatSlice.js';
 import { setLikeNotification } from './Redux/rtnSlice.js';
 import ProtectedRoutes from './components/ProtectedRoutes.jsx';
+import dotenv from 'dotenv';
+// dotenv.config();
 const browserRouter = createBrowserRouter([
      {
       path     : '/',
       element  : <ProtectedRoutes>
                    <MainLayout/>
                  </ProtectedRoutes>,
-      children : [
+      children : [ 
           {
            path : '/',
            element : 
@@ -82,21 +84,24 @@ function App() {
        });
        
        socketio.on('notification',(notification)=>{
-        dispatch();
+        dispatch(setLikeNotification(notification));
        });
+
        
        return () => {
         socketio.off('getOnlineUsers'); 
-           socketio.close(); 
-           dispatch(setSocket(null));
-          }
+        socketio.off('notification'); 
+        socketio.close(); 
+        dispatch(setSocket(null));
+      }
       }
     else
       if(socket)
        {  
          return () => {
-         socket.off('getOnlineUsers'); 
-         socket.close(); 
+          socket.off('getOnlineUsers'); 
+          socket.off('notification'); 
+          socket.close(); 
          dispatch(setSocket(null));
           }
        } 

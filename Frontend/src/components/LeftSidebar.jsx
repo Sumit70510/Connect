@@ -120,7 +120,7 @@ export default function LeftSidebar() {
                   {isSidebarExpanded && <span>{item.text}</span>}
                   
                   {
-                    item.text==='Notifications'&&likeNotification.length>0&&
+                    item.text==='Notifications'&&
                     (
                      <Popover>
                        <PopoverTrigger asChild>
@@ -135,8 +135,8 @@ export default function LeftSidebar() {
                             (<p>No New Notification</p> )
                              :
                             (
-                              likeNotification.map((notification,i)=>{
-                                rerturn (
+                              likeNotification.map((notification)=>{
+                                return (
                                   <div key={notification?.userId} className='flex items-center gap-2 my-2'>
                                     <Avatar className='w-6 h-6'>
                                       <AvatarImage src={notification?.userDetails?.profilePicture}/>

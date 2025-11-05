@@ -54,7 +54,7 @@ export default function Login() {
      {
       if(user)
        {
-         navigate('/');
+         navigate('/')
        }  
      }
      ,[]);

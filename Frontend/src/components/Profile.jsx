@@ -1,5 +1,5 @@
 import useGetUserProfile from "@/Hooks/useGetUserProfile";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -16,6 +16,14 @@ export default function Profile() {
   const [activeTab,setActiveTab] = useState('POSTS');
   const isLoggedInUserProfile = user?._id===userProfile?._id;
   
+  
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 690);
+   useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 690);
+     window.addEventListener('resize', handleResize);
+     return () => window.removeEventListener('resize', handleResize);
+    }, []);
+  
   const handleTabChange = (tab) => 
    {
     setActiveTab(tab); 
@@ -24,9 +32,10 @@ export default function Profile() {
   const displayedPost = activeTab==='POSTS'? userProfile?.posts : userProfile?.bookmarks;  
   
   return (
-  <div className="flex  justify-center mx-auto overflow-hidden">
+  <div className={`flex w-full h-full justify-center overflow-visible ${isMobile?"":"ml-[16%]"}`}>
     <div className="flex flex-col gap-12 p-8">
-    <div className="grid grid-cols-[1fr_2fr]">
+    {/* <div className="grid grid-cols-[1fr_2fr]"> */}
+    <div className="flex">
      <section className="flex items-center justify-center">
       <Avatar className="h-32 w-32">
         <AvatarImage src={userProfile?.profilePicture} alt="Profile Photo" />

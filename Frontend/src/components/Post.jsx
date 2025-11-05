@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
 import { Bookmark, MessageCircle, MoreHorizontal, Send } from 'lucide-react';
@@ -22,6 +22,14 @@ export default function Post({post})
    const [postLike , setPostLike] = useState(post?.likes?.length);
    const [liked,setLiked] = useState(post?.likes?.includes(user?._id)||false);
    const [comment,setComment] = useState(post?.comments);
+   
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 690);
+   
+     useEffect(() => {
+       const handleResize = () => setIsMobile(window.innerWidth < 690);
+       window.addEventListener('resize', handleResize);
+       return () => window.removeEventListener('resize', handleResize);
+      }, []);
    
    const changeEventHandler = (e)=>
      {
@@ -130,7 +138,7 @@ export default function Post({post})
     } 
      
    return (
-    <div className='my-8 w-full max-w-sm mx-auto'>
+    <div className={`my-8 w-full max-w-sm mx-auto`}>
       <div className='flex items-center justify-between px-1 gap-2'>
         <div className='flex items-center gap-2'> 
          <Avatar>

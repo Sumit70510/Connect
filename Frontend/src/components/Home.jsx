@@ -26,12 +26,12 @@ import useGetSuggestedUsers from '@/hooks/useGetSuggestedUsers'
 
 const Home = () => {
     useGetAllPost();
-    useGetSuggestedUsers();
+    useGetSuggestedUsers(); 
     return (
         <div className='flex'>
-            <div className='flex-grow mr-[18%]'>
+            <div className='grow'>
                 <Feed />
-                {/* <Outlet /> */}
+                <Outlet />
             </div>
             <div className='w-[18%] fixed top-0 right-0 min-w-[220px] max-w-[300px] h-screen border-l hidden lg:block'>
               <RightSidebar />
