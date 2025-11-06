@@ -1,8 +1,8 @@
-import store from '@/Redux/store';
+import store from '@/Redux/store.js';
 import React from 'react'
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar.jsx';
 
 export default function SuggestedUsers() {
 //   const {user} = useSelector(state=>state.auth);  

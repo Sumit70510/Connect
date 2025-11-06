@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
+import { Dialog, DialogContent, DialogTrigger } from './ui/dialog.jsx';
 import { Link } from 'react-router';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar.jsx';
 import { MoreHorizontal } from 'lucide-react';
-import { Button } from './ui/button';
+import { Button } from './ui/button.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import store from '@/Redux/store';
-import Comment from './comment';
+import Comment from './Comment.jsx';
 import axios from 'axios';
-import { setPosts, setSelectedPost } from '@/Redux/postSlice';
+import { setPosts, setSelectedPost } from '@/Redux/postSlice.js';
 import { toast } from 'sonner';
+
 
 export default function CommentDialog({open,setOpen,post}) {
   

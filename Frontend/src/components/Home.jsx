@@ -17,12 +17,12 @@
 //   )
 // }
 
-import React from 'react'
-import Feed from './Feed'
-import { Outlet } from 'react-router-dom'
-import RightSidebar from './RightSidebar'
-import useGetAllPost from '@/hooks/useGetAllPost'
-import useGetSuggestedUsers from '@/hooks/useGetSuggestedUsers'
+import React from 'react';
+import Feed from './Feed.jsx';
+import { Outlet } from 'react-router-dom';
+import RightSidebar from './RightSidebar.jsx';
+import useGetAllPost from '@/hooks/useGetAllPost.jsx';
+import useGetSuggestedUsers from '@/hooks/useGetSuggestedUsers.jsx';
 
 const Home = () => {
     useGetAllPost();

@@ -1,15 +1,15 @@
 import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { Button } from './ui/button';
-import { Textarea } from './ui/textarea';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar.jsx';
+import { Button } from './ui/button.jsx';
+import { Textarea } from './ui/textarea.jsx';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from './ui/select.jsx';
 import { Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import axios from 'axios';
-import { setAuthUser, setUserProfile } from '@/Redux/authslice';
-import { readFileAsDataURL } from '@/Lib/utils';
+import { setAuthUser, setUserProfile } from '@/Redux/authslice.js';
+import { readFileAsDataURL } from '@/Lib/utils.js';
 
 export default function EditProfile() {
   const {user} = useSelector(store=>store.auth);

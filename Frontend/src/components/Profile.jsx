@@ -1,10 +1,10 @@
-import useGetUserProfile from "@/Hooks/useGetUserProfile";
+import useGetUserProfile from "@/Hooks/useGetUserProfile.jsx";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Button } from "./ui/button";
-import { Badge } from "./ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar.jsx";
+import { Button } from "./ui/button.jsx";
+import { Badge } from "./ui/badge.jsx";
 import { AtSign, Heart, MessageCircle } from "lucide-react";
 
 export default function Profile() {
@@ -32,7 +32,7 @@ export default function Profile() {
   const displayedPost = activeTab==='POSTS'? userProfile?.posts : userProfile?.bookmarks;  
   
   return (
-  <div className={`flex w-full h-full justify-center overflow-visible ${isMobile?"":"ml-[16%]"}`}>
+  <div className={`flex h-full justify-center overflow-scroll mx-auto ${isMobile?"":"ml-[16%]"}`}>
     <div className="flex flex-col gap-12 p-8">
     {/* <div className="grid grid-cols-[1fr_2fr]"> */}
     <div className="flex">

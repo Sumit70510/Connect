@@ -1,14 +1,14 @@
 import React, { useRef, useState } from 'react'
-import { Dialog, DialogContent, DialogHeader } from './ui/dialog'
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
-import { Textarea } from './ui/textarea'
-import { Button } from './ui/button';
+import { Dialog, DialogContent, DialogHeader } from './ui/dialog.jsx'
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar.jsx'
+import { Textarea } from './ui/textarea.jsx'
+import { Button } from './ui/button.jsx';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import axios from 'axios';
-import { readFileAsDataURL } from '@/Lib/utils';
+import { readFileAsDataURL } from '@/Lib/utils.js';
 import { useDispatch, useSelector } from 'react-redux';
-import { setPosts } from '@/Redux/postSlice';
+import { setPosts } from '@/Redux/postSlice.js';
 
 export default function CreatePost({open,setOpen}) {
    const [caption,setCaption] = useState(""); 

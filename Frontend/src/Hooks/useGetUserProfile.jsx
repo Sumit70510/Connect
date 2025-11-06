@@ -1,4 +1,4 @@
-import { setUserProfile } from "@/Redux/authslice";
+import { setUserProfile } from "@/Redux/authslice.js";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";

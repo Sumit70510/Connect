@@ -29,10 +29,10 @@ app.use('/api/v1/user',userRoutes);
 app.use('/api/v1/post',postRoutes);
 app.use('/api/v1/message',messageRoutes);
 
-app.use(express.static(path.join(__dirname, '../Frontend/dist')));
+app.use(express.static(path.join(__dirname, './Frontend/dist')));
 
 app.use((req, res) => {
-    res.sendFile(path.resolve(__dirname, '../Frontend/dist', 'index.html'));
+    res.sendFile(path.resolve(__dirname, './Frontend/dist', 'index.html'));
 });
 
 // app.get("/",(req,res)=>{

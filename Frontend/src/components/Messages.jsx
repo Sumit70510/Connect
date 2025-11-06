@@ -1,10 +1,10 @@
 import React from 'react'
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar.jsx'
 import { Link } from 'react-router'
-import { Button } from './ui/button'
+import { Button } from './ui/button.jsx'
 import { useSelector } from 'react-redux'
-import useGetAllMessage from '@/Hooks/useGetAllMessage'
-import useGetRTM from '@/Hooks/useGetRTM'
+import useGetAllMessage from '@/Hooks/useGetAllMessage.jsx'
+import useGetRTM from '@/Hooks/useGetRTM.jsx'
 
 export default function Messages({selectedUser}) {
   useGetAllMessage();

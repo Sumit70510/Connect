@@ -14,7 +14,7 @@ import { setSocket } from './Redux/socketSlice.js';
 import { setOnlineUsers } from './Redux/chatSlice.js';
 import { setLikeNotification } from './Redux/rtnSlice.js';
 import ProtectedRoutes from './Components/ProtectedRoutes.jsx';
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
 // dotenv.config();
 const browserRouter = createBrowserRouter([
      {

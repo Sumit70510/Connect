@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.jsx';
-import { Toaster } from './Components/ui/sonner';
+import { Toaster } from './Components/ui/sonner.jsx';
 import { Provider } from 'react-redux';
 import store from './Redux/store.js';
 import { PersistGate } from 'redux-persist/integration/react';

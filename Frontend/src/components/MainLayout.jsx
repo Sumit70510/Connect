@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import LeftSidebar from './LeftSidebar';
-import MobileUI from './MobileUI';
+import LeftSidebar from './LeftSidebar.jsx';
+import MobileUI from './MobileUI.jsx';
 export default function MainLayout() {
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 690);

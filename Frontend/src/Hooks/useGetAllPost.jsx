@@ -1,7 +1,7 @@
-import { setPosts } from '@/Redux/postSlice';
+import { setPosts } from '@/Redux/postSlice.js';
 import axios from 'axios';
-import React, { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 export default function useGetAllPost() {
    const dispatch = useDispatch();

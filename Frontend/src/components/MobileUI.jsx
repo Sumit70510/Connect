@@ -2,12 +2,12 @@ import { Heart, Home, LogOut, MessageCircle, PlusSquare, Search, TrendingUp } fr
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar.jsx';
 import axios from 'axios';
 import { toast } from 'sonner';
-import CreatePost from './CreatePost';
-import { setPosts, setSelectedPost } from '@/Redux/postSlice';
-import { setAuthUser } from '@/Redux/authslice';
+import CreatePost from './CreatePost.jsx';
+import { setPosts, setSelectedPost } from '@/Redux/postSlice.js';
+import { setAuthUser } from '@/Redux/authslice.js';
 
 export default function MobileUI() {  
     

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import {Heart, Home, LogOut, MessageCircle, PlusSquare, Search, TrendingUp} from 'lucide-react';
-import { AvatarFallback ,Avatar,AvatarImage} from './ui/avatar';
+import { AvatarFallback ,Avatar,AvatarImage} from './ui/avatar.jsx';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAuthUser } from '@/Redux/authslice';
-import CreatePost from './CreatePost';
-import { setPosts, setSelectedPost } from '@/Redux/postSlice';
-import { Button } from './ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { setAuthUser } from '@/Redux/authslice.js';
+import CreatePost from './CreatePost.jsx';
+import { setPosts, setSelectedPost } from '@/Redux/postSlice.js';
+import { Button } from './ui/button.jsx';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover.jsx';
 
 export default function LeftSidebar() {
   

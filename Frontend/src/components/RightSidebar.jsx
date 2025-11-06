@@ -1,8 +1,8 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar.jsx';
 import { Link } from 'react-router';
-import SuggestedUsers from './SuggestedUsers';
+import SuggestedUsers from './SuggestedUsers.jsx';
 
 export default function RightSidebar() {
   const {user} = useSelector(state=>state.auth);

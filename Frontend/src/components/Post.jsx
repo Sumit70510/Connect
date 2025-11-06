@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar.jsx';
+import { Dialog, DialogContent, DialogTrigger } from './ui/dialog.jsx';
 import { Bookmark, MessageCircle, MoreHorizontal, Send } from 'lucide-react';
-import { Button } from './ui/button';
+import { Button } from './ui/button.jsx';
 import { FaHeart , FaRegHeart } from 'react-icons/fa';
 import CommentDialog from './CommentDialog.jsx';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import axios from 'axios';
-import { setPosts, setSelectedPost } from '@/Redux/postSlice';
-import { Badge } from './ui/badge';
+import { setPosts, setSelectedPost } from '@/Redux/postSlice.js';
+import { Badge } from './ui/badge.jsx';
 
 export default function Post({post}) 
  {

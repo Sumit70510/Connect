@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar.jsx';
 import { setSelectedUser } from '@/Redux/authslice';
 import { MessageCircleCode } from 'lucide-react';
-import Messages from './Messages';
-import { Button } from './ui/button';
+import Messages from './Messages.jsx';
+import { Button } from './ui/button.jsx';
 import axios from 'axios';
-import { setMessages } from '@/Redux/chatSlice';
+import { setMessages } from '@/Redux/chatSlice.js';
 import { toast } from 'sonner';
 
 export default function ChatPage() {  
