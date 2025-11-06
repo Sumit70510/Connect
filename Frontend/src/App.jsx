@@ -1,19 +1,19 @@
-import Login from './components/Login.jsx'
-import Signup from './components/signup.jsx';
+import Login from './Components/Login.jsx'
+import Signup from './Components/Signup.jsx';
 import { createBrowserRouter } from 'react-router-dom';
-import MainLayout from './components/MainLayout.jsx';
-import Home from './components/Home.jsx';
-import Profile from './components/Profile.jsx';
+import MainLayout from './Components/MainLayout.jsx';
+import Home from './Components/Home.jsx';
+import Profile from './Components/Profile.jsx';
 import { RouterProvider } from 'react-router-dom';
-import EditProfile from './components/EditProfile.jsx';
-import ChatPage from './components/ChatPage.jsx';
+import EditProfile from './Components/EditProfile.jsx';
+import ChatPage from './Components/ChatPage.jsx';
 import { io } from 'socket.io-client';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { setSocket } from './Redux/socketSlice.js';
 import { setOnlineUsers } from './Redux/chatSlice.js';
 import { setLikeNotification } from './Redux/rtnSlice.js';
-import ProtectedRoutes from './components/ProtectedRoutes.jsx';
+import ProtectedRoutes from './Components/ProtectedRoutes.jsx';
 import dotenv from 'dotenv';
 // dotenv.config();
 const browserRouter = createBrowserRouter([

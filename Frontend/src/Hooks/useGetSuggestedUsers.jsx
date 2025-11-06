@@ -1,6 +1,6 @@
 import { setSuggestedUsers } from '@/Redux/authslice';
 import axios from 'axios';
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 
 export default function useGetSuggestedUsers() {

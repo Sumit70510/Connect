@@ -6,7 +6,7 @@ import { Button } from './ui/button';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import axios from 'axios';
-import { readFileAsDataURL } from '@/lib/utils';
+import { readFileAsDataURL } from '@/Lib/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPosts } from '@/Redux/postSlice';
 

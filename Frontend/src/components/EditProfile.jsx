@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { setAuthUser, setUserProfile } from '@/Redux/authslice';
-import { readFileAsDataURL } from '@/lib/utils';
+import { readFileAsDataURL } from '@/Lib/utils';
 
 export default function EditProfile() {
   const {user} = useSelector(store=>store.auth);
