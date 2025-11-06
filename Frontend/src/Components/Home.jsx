@@ -21,8 +21,8 @@ import React from 'react';
 import Feed from './Feed.jsx';
 import { Outlet } from 'react-router-dom';
 import RightSidebar from './RightSidebar.jsx';
-import useGetAllPost from '@/hooks/useGetAllPost.jsx';
-import useGetSuggestedUsers from '@/hooks/useGetSuggestedUsers.jsx';
+import useGetAllPost from '@/Hooks/useGetAllPost.jsx';
+import useGetSuggestedUsers from '@/Hooks/useGetSuggestedUsers.jsx';
 
 const Home = () => {
     useGetAllPost();
