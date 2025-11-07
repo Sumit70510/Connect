@@ -71,7 +71,7 @@ function App() {
   {
     if(user)
      {
-       const socketio = io('http://localhost:8000',
+       const socketio = io('http://localhost:3000',
          {query : {
            userId : user?._id
          } ,
