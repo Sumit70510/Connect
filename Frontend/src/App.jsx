@@ -71,7 +71,7 @@ function App() {
   {
     if(user)
      {
-       const socketio = io('http://localhost:3000',
+       const socketio = io('https://instagram-ajpd.onrender.com',
          {query : {
            userId : user?._id
          } ,
