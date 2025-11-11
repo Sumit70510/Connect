@@ -14,8 +14,9 @@ import { setSocket } from './Redux/socketSlice.js';
 import { setOnlineUsers } from './Redux/chatSlice.js';
 import { setLikeNotification } from './Redux/rtnSlice.js';
 import ProtectedRoutes from './Components/ProtectedRoutes.jsx';
-// import dotenv from 'dotenv';
-// dotenv.config();
+
+const socketURL = import.meta.env.VITE_URL;
+
 const browserRouter = createBrowserRouter([
      {
       path     : '/',
@@ -71,7 +72,7 @@ function App() {
   {
     if(user)
      {
-       const socketio = io('https://instagram-ajpd.onrender.com',
+       const socketio = io(socketURL,
          {query : {
            userId : user?._id
          } ,

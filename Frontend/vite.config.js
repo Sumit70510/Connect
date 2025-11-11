@@ -13,9 +13,10 @@ export default defineConfig({
     },
   },
   server: {
+    port : process.env.PORT||5173,//remove by default
     proxy: {
       "/api": {
-        target: "http://localhost:3000",
+        target: process.env.VITE_URL||"http://localhost:3000", //3000 by Default
         changeOrigin: true,
       },
     },
