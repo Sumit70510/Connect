@@ -158,7 +158,7 @@ export default function Post({post})
                     <Button variant='ghost' className='cursor-pointer w-fit text-[#ED4956] font-bold'>
                         Unfollow
                     </Button>
-                    <Button variant='ghost' className='cursor-pointer w-fit '>
+                    <Button variant='ghost' className='cursor-pointer w-fit text-black'>
                         Add to Favourites
                     </Button>
                    { user&&user?._id==post?.author?._id&&
@@ -172,7 +172,14 @@ export default function Post({post})
       
       <img src={post?.image}//'https://www.pixelstalk.net/wp-content/uploads/2016/07/Desktop-hd-3d-nature-images-download.jpg'
          className='rounded-sm my-2 aspect-square object-contain mx-auto cursor-pointer'
-         onClick={()=>{if(!isMobile){dispatch(setSelectedPost(post));setOpen(true);}}} />
+          onClick={() => {
+            dispatch(setSelectedPost(post));
+            if(isMobile) {
+             navigate(`/${post._id}/comments`);
+            } else {
+            setOpen(true);
+              }
+           }} />
       
       <div className='flex items-center justify-between my-2 px-2'>
        <div className='flex items-center gap-3'>
