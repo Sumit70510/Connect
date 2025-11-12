@@ -50,6 +50,13 @@ export default function Login() {
    }
   };
   
+   const [isMobile, setIsMobile] = useState(window.innerWidth < 690);
+    useEffect(() => {
+      const handleResize = () => setIsMobile(window.innerWidth < 690);
+       window.addEventListener('resize', handleResize);
+       return () => window.removeEventListener('resize', handleResize);
+      }, []);
+  
   useEffect(()=>
      {
       if(user)
@@ -60,8 +67,10 @@ export default function Login() {
      ,[]);
   
    return(
-     <div className='flex items-center w-screen h-screen justify-center'>
-        <form className='shadow-lg flex flex-col gap-5 p-8' onSubmit={loginHandler}>
+     <div className={`flex items-center w-screen h-screen justify-center ${'bg-linear-to-r from-[#141E30] to-[#243B55]'}`}>
+        <form className={`shadow-lg flex flex-col gap-5 p-4 ${
+        'bg-zinc-200 text-black border  rounded-lg mx-1'}`} 
+        onSubmit={loginHandler}>
            <div className='my-4'>
              <h1 className='text-center font-bold text-xl'>
                 LOGO
@@ -74,14 +83,14 @@ export default function Login() {
             <span  className='font-medium my-2'>
              Email
             </span>
-            <Input className='focus-visible:ring-transparent my-2'
+            <Input className='focus-visible:ring-transparent my-2  border border-zinc-300 '
              type='email' name='email' value={input.email} onChange={changeEventHandler}/> 
            </div>  
            <div>
             <span  className='font-medium my-2'>
              Password
             </span>
-            <Input className='focus-visible:ring-transparent my-2'
+            <Input className='focus-visible:ring-transparent my-2  border border-zinc-300 '
              type='password' name='password'value={input.password} onChange={changeEventHandler}/> 
            </div>
             {

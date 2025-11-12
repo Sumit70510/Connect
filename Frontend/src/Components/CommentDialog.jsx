@@ -79,7 +79,7 @@ export default function CommentDialog({open,setOpen,post}) {
   <DialogContent 
     onInteractOutside={() => setOpen(false)}
     style={{ width: '900px', maxWidth: 'none', height: '600px' }}
-    className="p-0 flex flex-col border-none !w-[950px] h-[600px] max-w-none"
+    className="p-0 flex flex-col border-none w-[950px]! h-[600px] max-w-none"
   >
            <div className='flex flex-1 h-full'>
             <div className='w-1/2 h-full'>
@@ -110,11 +110,13 @@ export default function CommentDialog({open,setOpen,post}) {
                 </DialogTrigger>
                 <DialogContent className='flex flex-col items-center text-sm text-center'>
                   <div className='cursor-pointer w-full font-bold text-[#ED4956]'>
-                    Unfollow
-                  </div>
+                    Unfollow  
+                  </div> 
+                  {/* follow /unfollow logic */}
                   <div className='cursor-pointer w-full'>
                     Add To Favourite
                   </div>
+                  {/* book mark */}
                 </DialogContent>
                </Dialog>
               </div>   
@@ -131,7 +133,7 @@ export default function CommentDialog({open,setOpen,post}) {
                     onChange={changeEventHandler}
                     value={text} className='outline-none text-sm flex-1 min-w-0'/>
                   <Button disabled={!text.trim()} onClick={sendMessageHandler} 
-                    variant='outline' className='flex-shrink-0 cursor-pointer' >Send</Button>
+                    variant='outline' className='shrink-0 cursor-pointer' >Send</Button>
                 </div>
               </div>
             </div>   

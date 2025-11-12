@@ -28,12 +28,12 @@ const Home = () => {
     useGetAllPost();
     useGetSuggestedUsers(); 
     return (
-        <div className='flex'>
-            <div className='grow'>
+        <div className='flex hide-scrollbar'>
+            <div className='grow hide-scrollbar'>
                 <Feed />
                 <Outlet />
             </div>
-            <div className='w-[18%] fixed top-0 right-0 min-w-[220px] max-w-[300px] h-screen border-l hidden lg:block'>
+            <div className='w-[18%] fixed  overflow-y-scroll hide-scrollbar top-0 right-0 min-w-[220px] max-w-[300px] h-screen border-l hidden lg:block'>
               <RightSidebar />
             </div>
         </div>

@@ -24,12 +24,12 @@ export const register = async(req,res)=>
             success:false
            }); 
          }  
-        const hashedPassword = await bcrypt.hash(password,10); 
-        const newUser = await User.create({
-            username,
-            email,
-            password:hashedPassword
-        })       
+        // const hashedPassword = await bcrypt.hash(password,10); 
+        // const newUser = await User.create({
+        //     username,
+        //     email,
+        //     password:hashedPassword
+        // })       
         return res.status(201).json({
             message : "Account Created Successfully",
             success : true
@@ -218,7 +218,7 @@ export const followOrUnfollow = async(req,res) =>
   {
      try
       {
-        const follower=req.id;//logged in user
+        const follower=req.id;  //logged in user
         const followed=req.params.id;
         if(follower===followed)
          {

@@ -118,3 +118,35 @@
     @apply bg-background text-foreground;
   }
 }
+
+html, body {
+  overflow-x: hidden;
+}
+
+/* Hide scrollbar but keep scroll functionality */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* for Internet Explorer, Edge */
+  scrollbar-width: none;     /* for Firefox */
+}
+
+html {
+  overflow-y: scroll; /* keeps scroll functionality */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+html::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+
+@media (max-width: 640px) {
+  body {
+    background-color:rgb(24 24 27);;
+    color: white;
+  }
+}
+

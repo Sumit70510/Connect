@@ -14,20 +14,24 @@ export default function MainLayout() {
 
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex hide-scrollbar">
       {/* Left Sidebar min-w-[200px] max-w-[250px]*/}
      {/* Sidebar / Mobile UI */}
       
       {isMobile ? (
+         <div className="overflow-hidden h-screen w-screen">
           <MobileUI/>
+        </div>
+          
       ) : ( 
         <>
-        <div className="overflow-x-auto fixed top-0 left-0 w-[16%] h-screen border-r min-w-[200px] max-w-[250px]">
+        <div className="overflow-y-auto hide-scrollbar fixed top-0 left-0 w-auto h-screen border-r ">
+          {/* min-w-[200px] max-w-[250px] */}
           <LeftSidebar />
         </div>
       
-         <div className="flex-1 flex justify-center overflow-x-auto">
-          <div className="w-full">   
+         <div className="flex-1 flex justify-center hide-scrollbar">
+          <div className="w-full overflow-y-scroll hide-scrollbar">   
            <Outlet />
           </div>
          </div>

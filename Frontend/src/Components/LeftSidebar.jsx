@@ -93,7 +93,7 @@ export default function LeftSidebar() {
    const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
   useEffect(() => {
     const handleResize = () => {
-      setIsSidebarExpanded(window.innerWidth >= 1024); // Adjust breakpoint as needed
+      setIsSidebarExpanded(window.innerWidth > 1106); // Adjust breakpoint as needed
     };
 
     window.addEventListener("resize", handleResize);
@@ -105,7 +105,7 @@ export default function LeftSidebar() {
   }, []); 
     
   return (
-     <div className='fixed top-0 z-10 left-0 px-4 border-r border-gray-300 w-[16%] h-screen'>
+     <div className='fixed top-0 z-10 left-0 px-4 border-r border-gray-300 w-auto h-screen'>
       <div className='flex flex-col px-4 h-full'>
      {/* <div className='fixed top-0 z-10 left-0 px-4 border-r border-gray-300 w-[16%] h-screen'> */}
         {/* <div className='flex flex-col'> */}
@@ -120,7 +120,7 @@ export default function LeftSidebar() {
                   {isSidebarExpanded && <span>{item.text}</span>}
                   
                   {
-                    item.text==='Notifications'&&
+                    item.text==='Notifications'&&likeNotification.length!==0&&
                     (
                      <Popover>
                        <PopoverTrigger asChild>

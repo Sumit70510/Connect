@@ -14,6 +14,7 @@ import { setSocket } from './Redux/socketSlice.js';
 import { setOnlineUsers } from './Redux/chatSlice.js';
 import { setLikeNotification } from './Redux/rtnSlice.js';
 import ProtectedRoutes from './Components/ProtectedRoutes.jsx';
+import MobileComments from './Components/MobileComments.jsx';
 
 const socketURL = import.meta.env.VITE_URL;
 
@@ -51,9 +52,16 @@ const browserRouter = createBrowserRouter([
                     <ProtectedRoutes>
                       <ChatPage/>
                     </ProtectedRoutes>
-           }    
-      ]}
-    ,{
+           }
+          ]}
+          ,
+          {
+            path : '/:postId/comments',
+            element : <ProtectedRoutes>
+                 <MobileComments/>
+            </ProtectedRoutes> 
+          },    
+          ,{
       path    : '/login',
       element : <Login/> }
     ,{

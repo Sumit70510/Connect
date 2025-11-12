@@ -8,6 +8,8 @@ import { toast } from 'sonner';
 import CreatePost from './CreatePost.jsx';
 import { setPosts, setSelectedPost } from '@/Redux/postSlice.js';
 import { setAuthUser } from '@/Redux/authslice.js';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover.jsx';
+import { Button } from './ui/button.jsx';
 
 export default function MobileUI() {  
     
@@ -22,25 +24,25 @@ export default function MobileUI() {
   const headerItems = [
       //   {icon : <TrendingUp/>,
       //    text : "Explore" },
-        {icon : <MessageCircle/>,
+        {icon : <MessageCircle className='text-white'/>,
          text : "Messages" },
         {
-         icon : <LogOut/> ,
+         icon : <LogOut className='text-white'/> ,
          text : "Logout"
         }
   ];
   
   const footerItems = [
-      {icon : <Home/>,
+      {icon : <Home className='text-white'/>,
        text : "Home" },
-      {icon : <Search/>,
+      {icon : <Search className='text-white'/>,
        text : "Search" },
-      {icon : <PlusSquare/>,
+      {icon : <PlusSquare className='text-white'/>,
        text : "Create" },
-      {icon : <Heart/>,
+      {icon : <Heart className='text-white'/>,
        text : "Notifications" },
       {icon : (
-              <Avatar className='w-6 h-6'>
+              <Avatar className='w-6 h-6 text-white'>
                 <AvatarImage src={user?.profilePicture}/>
                 <AvatarFallback>{user?.username?.slice(0,2).toUpperCase() || "CN"}</AvatarFallback>
               </Avatar> ),
@@ -96,14 +98,14 @@ export default function MobileUI() {
     <div className="flex flex-col h-screen">
       
     {/* Header */}
-    <header className="h-12 flex items-center justify-between px-4 border-b bg-white fixed top-0 left-0 right-0 z-10">
-     <h1 className="text-lg font-bold">LOGO</h1>
+    <header className="h-12 flex items-center justify-between px-4 border-b border-zinc-700 bg-zinc-900 bg-opacity-70 fixed top-0 left-0 right-0 z-10">
+     <h1 className="text-lg font-bold text-white">LOGO</h1>
      <div className="flex items-center gap-3">
        {
          headerItems.map((item, index) => (
          <button
           key={index}
-          className="flex items-center justify-center hover:bg-gray-200 cursor-pointer rounded-lg p-2"
+          className="flex items-center justify-center hover:bg-green-900 cursor-pointer rounded-lg p-2"
           onClick={() => navbarHandler(item.text)}
           aria-label={item.text} >
             <span className="text-xl">{item.icon}</span>
@@ -114,18 +116,57 @@ export default function MobileUI() {
 
 
     {/* Scrollable Feed */}
-    <div className="flex-1 overflow-y-auto pt-12 pb-12 p-1">
+    <div className="flex-1 overflow-y-scroll hide-scrollbar pt-12 pb-12">
       <Outlet />
     </div>
 
     {/* Footer */}
-    <footer className="h-12 flex items-center justify-around border-t bg-white fixed bottom-0 left-0 right-0 z-10">
+    <footer className="h-12 flex items-center justify-around border-t border-zinc-700 bg-zinc-900 bg-opacity-70 fixed bottom-0 left-0 right-0 z-10">
        {footerItems.map((item, index) => (
         <button
           key={index}
-          className="flex items-center gap-3 relative hover:bg-gray-200 cursor-pointer rounded-lg p-3 my-3" 
+          className="flex items-center gap-3 relative hover:bg-green-900 cursor-pointer rounded-lg p-3 my-3" 
           onClick={()=>navbarHandler(item.text)} aria-label={item.text}>
             <span className="text-xl">{item.icon}</span>
+             {
+                    item.text==='Notifications'&&likeNotification.length!==0&&
+                    (
+                     <Popover>
+                       <PopoverTrigger asChild>
+                         <Button size='icon' className='rounded-full h-5 w-5
+                          absolute bottom-6 left-6 bg-red-600 hover:bg-red-600'>
+                          {likeNotification.length}
+                         </Button>
+                       </PopoverTrigger>
+                       <PopoverContent>
+                        <div>
+                          {likeNotification.length===0?
+                            (<p>No New Notification</p> )
+                             :
+                            (
+                              likeNotification.map((notification)=>{
+                                return (
+                                  <div key={notification?.userId} className='flex items-center gap-2 my-2'>
+                                    <Avatar className='w-6 h-6'>
+                                      <AvatarImage src={notification?.userDetails?.profilePicture}/>
+                                      <AvatarFallback>{notification?.userDetails?.username.slice(0,2).toUpperCase() || "CN"}</AvatarFallback>
+                                    </Avatar>
+                                    <p className='text-sm'>
+                                     <span className='font-bold'>
+                                      {notification?.userDetails?.username}
+                                     </span> 
+                                      liked Your Post
+                                    </p>
+                                  </div>
+                                )
+                              })
+                            )
+                          }
+                        </div>
+                       </PopoverContent>
+                     </Popover> 
+                    )
+                  }
         </button>))
        }
      </footer>

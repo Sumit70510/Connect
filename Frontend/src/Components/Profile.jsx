@@ -1,43 +1,66 @@
 import useGetUserProfile from "@/Hooks/useGetUserProfile.jsx";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { Link, useParams } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate, useParams } from "react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar.jsx";
 import { Button } from "./ui/button.jsx";
 import { Badge } from "./ui/badge.jsx";
 import { AtSign, Heart, MessageCircle } from "lucide-react";
+import { setSelectedUser } from "@/Redux/authslice.js";
 
 export default function Profile() {
   const params = useParams();
   const userId = params.id;
   useGetUserProfile(userId);
-  const isFollowing = true;
-  const { userProfile , user } = useSelector((store) => store.auth);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { userProfile , user , selectedUser  } = useSelector((store) => store.auth);
   const [activeTab,setActiveTab] = useState('POSTS');
   const isLoggedInUserProfile = user?._id===userProfile?._id;
-  
-  
+  const [isFollowing,setIsFollowing] = useState(isLoggedInUserProfile?(
+                                       user?.following.includes(userProfile?._id)       
+                                       ):false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 690);
-   useEffect(() => {
+  useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 690);
      window.addEventListener('resize', handleResize);
      return () => window.removeEventListener('resize', handleResize);
     }, []);
-  
+    
   const handleTabChange = (tab) => 
-   {
-    setActiveTab(tab); 
-   }
-   
+      {
+       setActiveTab(tab); 
+      }
+  
+  const handleFollowUnFollow=(task)=>{
+       if(task==='FOLLOW')
+        {
+          // console.log('wants to follow',isFollowing);
+          setIsFollowing(true);
+        }
+       else
+        {
+         setIsFollowing(false);
+          
+        }   
+    }
+     
+   const sendMessage = ()=>{
+       dispatch(setSelectedUser(userProfile));
+       navigate('/chat');
+    } 
+      
   const displayedPost = activeTab==='POSTS'? userProfile?.posts : userProfile?.bookmarks;  
   
   return (
-  <div className={`flex h-full justify-center overflow-scroll mx-auto ${isMobile?"":"ml-[16%]"}`}>
-    <div className="flex flex-col gap-12 p-8">
-    {/* <div className="grid grid-cols-[1fr_2fr]"> */}
-    <div className="flex">
+  <div className={`flex h-full justify-center overflow-y-hidden ${isMobile?"":"mt-6 p-4 ml-[16%]"}`}>
+    {/* <div className="flex flex-col gap-12 p-8"> */}
+    <div className="flex flex-col gap-6 p-2 h-full w-full max-w-full box-border">
+
+    {/* <div className="flex justify-between"> */}
+    <div className="flex flex-col gap-5 sm:grid sm:grid-cols-[1fr_2fr] sm:gap-4 w-full items-center sm:items-start">
      <section className="flex items-center justify-center">
-      <Avatar className="h-32 w-32">
+      <Avatar className={`${isMobile?"h-28 w-28":"h-32 w-32"}`}>
         <AvatarImage src={userProfile?.profilePicture} alt="Profile Photo" />
         <AvatarFallback>
           {userProfile?.username?.slice(0, 2)?.toUpperCase()}
@@ -51,31 +74,36 @@ export default function Profile() {
           {isLoggedInUserProfile ? (
             <>
               <Link to='/account/edit'>
-                <Button className="hover:bg-gray-200 h-8" variant="secondary">
+                <Button className="flex hover:bg-gray-200 h-8" variant="secondary">
                   Edit Profile
                 </Button>
               </Link>
               <Button className="hover:bg-gray-200 h-8" variant="secondary">
                 View Archive
               </Button>
-              <Button className="hover:bg-gray-200 h-8" variant="secondary">
+              {/* <Button className="hover:bg-gray-200 h-8" variant="secondary">
                 Ad Tools
-              </Button>
+              </Button> */}
             </>
-          ) : isFollowing ? (
+          ) : 
+           isFollowing ? (
             <>
-            <Button className="h-8 bg-gray-300 hover:bg-gray-400" variant="secondary">
+            <Button className="h-8 bg-gray-300 hover:bg-gray-400" variant="secondary"
+              onClick={()=>handleFollowUnFollow('UNFOLLOW')} >
               Unfollow
             </Button>
-            <Button className="h-8 bg-gray-300 hover:bg-gray-400" variant="secondary">
+            <Button className="h-8 bg-gray-300 hover:bg-gray-400" variant="secondary"
+              onClick={sendMessage} >
               Message
             </Button>
             </>
           ) : (
-            <Button className="h-8 bg-[#0095f6] hover:bg-[#0d6fb1]">
+            <Button className="h-8 bg-[#0095f6] hover:bg-[#0d6fb1]" 
+              onClick={()=>handleFollowUnFollow('FOLLOW')} >
               Follow
             </Button>
-          )}
+           )
+          }
         </div>
         
         <div className="flex items-center gap-4">
@@ -94,25 +122,24 @@ export default function Profile() {
         </div>
         
         <div className="flex flex-col gap-1">
+          <span className="">
+            <Badge className='w-fit' variant='secondary'><AtSign/>{userProfile?.username}</Badge>
+          </span>
           <span className="font-semibold">
             {userProfile?.bio}
           </span>
-          <span className="pl-1">
-            <Badge className='w-fit' variant='secondary'><AtSign/>{userProfile?.username}</Badge>
-          </span>
-          <span className="">
+          {/* <span className="">
             🧑‍💻 Code With Sumit007
           </span>
           <span className="">
             🧑‍💻 MERN Stack
-          </span>
+          </span> */}
         </div>
-        
       </div>
-    </section>
-   </div>
+     </section>
+    </div>
    
-  <div className="border-t border-gray-500">
+    <div className="border-t border-gray-500">
     <div className="flex items-center justify-center gap-10 text-sm">
       <span className={`py-3 cursor-pointer ${activeTab==='POSTS'?'font-bold':''}`} onClick={()=>handleTabChange('POSTS')}>
         POSTS
@@ -127,14 +154,18 @@ export default function Profile() {
         TAGS
       </span>
     </div> 
-  </div>
+    </div>
   
-   <div className="grid grid-cols-3 gap-3">
+   {/* <div className="grid grid-cols-3 gap-3"> */}
+   <div className={`grid grid-cols-3 gap-1 ${isMobile?'overflow-y-scroll':'overflow-hidden'} w-full`}>
      {
       displayedPost?.slice()?.reverse()?.map((post)=>{
         return(
           <div key={post?._id} className="relative group cursor-pointer">
-            <img src={post.image} alt='Post Image' className='rounded-sm my-2 w-full aspect-square object-cover'/>
+            <img src={post.image} alt='Post Image' 
+            // className='rounded-sm my-2 w-full aspect-square object-cover'
+             className='rounded-sm my-2 w-full aspect-square object-cover' 
+            />
              <div className="absolute my-2 inset-0 flex items-center justify-center bg-black
              opacity-0 transition-opacity duration-300 group-hover:opacity-60 rounded-lg">
               <div className="flex items-center text-white space-x-4">
