@@ -60,7 +60,7 @@ export default function Signup()
     
    return (
      <div className='flex items-center w-screen h-screen justify-center bg-linear-to-r from-[#141E30] to-[#243B55]'>
-        <form className='shadow-lg flex flex-col gap-5 p-4 bg-zinc-200 text-black border  rounded-lg mx-1 ' onSubmit={signupHandler}>
+        <form className='shadow-lg flex flex-col gap-5 p-4 bg-amber-100 text-black border  rounded-lg mx-1 ' onSubmit={signupHandler}>
            <div className='my-4'>
              <h1 className='text-center font-bold text-xl'>
                 LOGO

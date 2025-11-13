@@ -106,16 +106,16 @@ export default function Profile() {
           }
         </div>
         
-        <div className="flex items-center gap-4">
-          <p className="font-semibold">
+        <div className="flex items-center gap-2">
+          <p className="font-semibold ml-3">
             {userProfile?.posts.length||0}
           </p>
           <span>Posts</span>
-          <p className="font-semibold">
+          <p className="font-semibold ml-3">
             {userProfile?.followers.length||0}
           </p>
           <span>Followers</span>
-          <p className="font-semibold">
+          <p className="font-semibold ml-3">
             {userProfile?.following.length||0}
           </p>
           <span>Following</span>
@@ -125,7 +125,7 @@ export default function Profile() {
           <span className="">
             <Badge className='w-fit' variant='secondary'><AtSign/>{userProfile?.username}</Badge>
           </span>
-          <span className="font-semibold">
+          <span className="font-semibold whitespace-pre-line">
             {userProfile?.bio}
           </span>
           {/* <span className="">

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {Heart, Home, LogOut, MessageCircle, PlusSquare, Search, TrendingUp} from 'lucide-react';
+import {Heart, Home, LogOut, MessageCircle, PlusIcon, Search, TrendingUp} from 'lucide-react';
 import { AvatarFallback ,Avatar,AvatarImage} from './ui/avatar.jsx';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
@@ -32,7 +32,7 @@ export default function LeftSidebar() {
        text : "Messages" },
       {icon : <Heart/>,
        text : "Notifications" },
-      {icon : <PlusSquare/>,
+      {icon : <PlusIcon/>,
        text : "Create" },
       {icon : (
               <Avatar className='w-6 h-6'>

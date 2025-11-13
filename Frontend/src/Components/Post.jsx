@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar.jsx';
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog.jsx';
-import { Bookmark, MessageCircle, MoreHorizontal, Send } from 'lucide-react';
+import { Bookmark, BookMarked, BookMarkedIcon, MessageCircle, MoreHorizontal, Send } from 'lucide-react';
 import { Button } from './ui/button.jsx';
-import { FaHeart , FaRegHeart } from 'react-icons/fa';
+import { FaBookmark, FaHeart , FaRegHeart } from 'react-icons/fa';
 import CommentDialog from './CommentDialog.jsx';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 import axios from 'axios';
 import { setPosts, setSelectedPost } from '@/Redux/postSlice.js';
 import { Badge } from './ui/badge.jsx';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 export default function Post({post}) 
  {
@@ -22,6 +22,7 @@ export default function Post({post})
    const dispatch = useDispatch();
    const [postLike , setPostLike] = useState(post?.likes?.length);
    const [liked,setLiked] = useState(post?.likes?.includes(user?._id)||false);
+   const [bookmarked,setBookmarked] = useState(user?.bookmark?.includes(post?._id)||false);
    const [comment,setComment] = useState(post?.comments);
    const navigate = useNavigate();
    const [isMobile, setIsMobile] = useState(window.innerWidth < 690);
@@ -129,6 +130,7 @@ export default function Post({post})
           );
          if(res.data.success)
           {
+            setBookmarked(!bookmarked);
             toast.success(res.data.message);
           }
        }
@@ -139,30 +141,37 @@ export default function Post({post})
     } 
      
    return (
-    <div className={`my-8 mt-4 w-full max-w-sm mx-auto p-1`}>
+    <div className={`mb-9 mt-4 w-full max-w-sm mx-auto p-1`}>
       <div className='flex items-center justify-between px-1 gap-2'>
-        <div className='flex items-center gap-2'> 
-         <Avatar>
+        <div className='flex items-center gap-2 cursor-pointer'> 
+         <Link to={`/profile/${post?.author?._id}`}>
+           <Avatar>
             <AvatarImage src={post?.author?.profilePicture} alt='Post_image'/>
             <AvatarFallback>{post?.author?.username?.slice(0, 2)?.toUpperCase()}</AvatarFallback>
-         </Avatar>
-         <h1>{post?.author?.username}</h1>
+           </Avatar>
+         </Link>
+         <Link to={`/profile/${post?.author?._id}`}>
+           <h1>{post?.author?.username}</h1>
+         </Link>
          {user?._id===post?.author?._id&&<Badge variant='secondary'>Author</Badge>}
          </div>
          <div className='flex items-center justify-between'>
-            <Dialog>
+            <Dialog className='bg-zinc-200'>
                 <DialogTrigger asChild>
                     <MoreHorizontal className='cursor-pointer'/>
                 </DialogTrigger>
                 <DialogContent className='flex flex-col items-center text-sm text-center'>
-                    <Button variant='ghost' className='cursor-pointer w-fit text-[#ED4956] font-bold'>
+                    <Button variant='ghost' className='cursor-pointer w-full hover:bg-zinc-400 text-[#ED4956] font-bold
+                     border-0 outline-none focus:outline-none focus:ring-0 focus-visible:ring-0 
+                     focus-visible:ring-offset-0 shadow-none
+                     '>
                         Unfollow
                     </Button>
-                    <Button variant='ghost' className='cursor-pointer w-fit text-black'>
+                    <Button variant='ghost' className='cursor-pointer w-full hover:bg-zinc-400 text-black'>
                         Add to Favourites
                     </Button>
                    { user&&user?._id==post?.author?._id&&
-                     <Button variant='ghost' className='cursor-pointer w-fit' onClick={deletePostHandler}>
+                     <Button variant='ghost' className='cursor-pointer w-full hover:bg-zinc-400 text-black' onClick={deletePostHandler}>
                         Delete
                     </Button> }
                 </DialogContent>
@@ -171,7 +180,7 @@ export default function Post({post})
       </div>
       
       <img src={post?.image}//'https://www.pixelstalk.net/wp-content/uploads/2016/07/Desktop-hd-3d-nature-images-download.jpg'
-         className='rounded-sm my-2 aspect-square object-contain mx-auto cursor-pointer'
+         className='rounded-sm my-2 aspect-square object-contain mx-auto border-y border-zinc-400  cursor-pointer'
           onClick={() => {
             dispatch(setSelectedPost(post));
             if(isMobile) {
@@ -196,7 +205,12 @@ export default function Post({post})
  className='cursor-pointer hover:text-gray-600'/>
          <Send className='cursor-pointer hover:text-gray-600'/>
        </div>
-         <Bookmark onClick={bookmarkHandler} className='cursor-pointer hover:text-gray-600'/>
+         {
+           bookmarked?
+           <FaBookmark onClick={bookmarkHandler} className='cursor-pointer w-6 h-6 hover:text-gray-100'/>
+           :
+           <Bookmark onClick={bookmarkHandler} className='cursor-pointer w-6 h-6 hover:text-gray-600'/>
+         }
       </div>   
       
      {post?.likes ? (
@@ -205,12 +219,13 @@ export default function Post({post})
          </span> ) : null}
          
      <p>
-        <span className='font-medium mr-2 px-2 '>
+        <span className='font-medium mr-1 px-2 '>
          {post?.author?.username}
         </span>
          {post?.caption}
      </p>
-     <span  onClick={() => {
+        {post?.comments?.length?
+        <span  onClick={() => {
             dispatch(setSelectedPost(post));
             if(isMobile) {
              navigate(`/${post._id}/comments`);
@@ -219,8 +234,9 @@ export default function Post({post})
               }
            }}
         className='cursor-pointer text-sm px-2 text-gray-400'>
-        {post?.comments?.length?`View all ${post?.comments?.length} Comments`:""}
-     </span>
+          {`View all ${post?.comments?.length} Comments`}
+         </span>
+        :null}
      <CommentDialog open={open} setOpen={setOpen} post={post}/>
      <div className='flex justify-between mx-2 px-2'>
         <input type='text' placeholder='Add a Comment...'

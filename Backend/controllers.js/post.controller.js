@@ -5,35 +5,54 @@ import {Comment} from '../Models/comment.model.js';
 import sharp from "sharp";
 import { getRecieverSocketId, io } from "../socket/socket.js";
 
-export const addNewPost = async(req,res)=>
- {
-   try
-    { 
-     const {caption}=req.body;
-     const image=req.file;
-     const authorId=req.id;
-     
-     if(!image)
-      {
-        return res.status(400).json({
-         message : 'Image Is Required',
-         success : false
-        })  
+export const addNewPost = async (req, res) => {
+  try {
+    const { caption } = req.body;
+    const image = req.file;
+    const authorId = req.id;
+
+    if (!image) {
+      return res.status(400).json({
+        message: 'Image is required',
+        success: false,
+      });
+    }
+
+    const mimeType = image.mimetype;
+
+    let optimizedImageBuffer;
+
+    // For HEIC/HEIF, skip sharp and upload original to Cloudinary
+    if (mimeType.includes("heic") || mimeType.includes("heif")) {
+      optimizedImageBuffer = image.buffer; // send original
+    } else {
+      // For other images, keep your old resizing logic
+      let format = "jpeg";
+      let sharpOptions = { quality: 80 };
+
+      if (mimeType.includes("png")) {
+        format = "png";
+        sharpOptions = { compressionLevel: 8 };
+      } else if (mimeType.includes("webp")) {
+        format = "webp";
+        sharpOptions = { quality: 85 };
       }
 
-   const optimizedImageBuffer = await sharp(image.buffer)
-          .resize({width :800 ,height : 800 , fit :"inside"})
-          .toFormat('jpeg',{quality:80}).toBuffer(); 
-   const fileUri = `data:image/jpeg;base64,${optimizedImageBuffer.toString('base64')}`;      
-    //  const cloudResponse = await cloudinary.uploader.upload(fileUri);
-     const cloudResponse = await new Promise((resolve, reject) => {
-       cloudinary.uploader.upload_stream({ folder: "posts" },(error, result) => {
-           if(error) 
-            reject(error);
-           else 
-            resolve(result);
-         }).end(optimizedImageBuffer);
-       }); 
+      optimizedImageBuffer = await sharp(image.buffer)
+        .resize({ width: 1080, height: 1080, fit: "inside" })
+        .toFormat(format, sharpOptions)
+        .toBuffer();
+    }
+
+    const cloudResponse = await new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        { folder: "posts", resource_type: "auto" }, // auto detects format
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      ).end(optimizedImageBuffer);
+    });
 
      const user = await User.findById(authorId);
       

@@ -143,7 +143,7 @@ html::-webkit-scrollbar {
 }
 
 
-@media (max-width: 640px) {
+@media (max-width: 690px) {
   body {
     background-color:rgb(24 24 27);;
     color: white;

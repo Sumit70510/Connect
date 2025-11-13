@@ -18,7 +18,7 @@ export default function CommentDialog({open,setOpen,post}) {
   const {selectedPost,posts} = useSelector(store=>store.post);
   const [comment,setComment]=useState([]);
   const dispatch = useDispatch();
-  
+  const {user} = useSelector(store=>store.auth);
   useEffect(() => {
   // console.log("selectedPost updated:", selectedPost);
   if (selectedPost) {
@@ -39,11 +39,32 @@ export default function CommentDialog({open,setOpen,post}) {
       }  
    }
    
+  const deletePostHandler = async ()=>
+     {
+        try
+         {
+           const res = await axios.delete(`/api/v1/post/delete/${selectedPost?._id}`,
+                             {withCredentials : true});
+           if(res.data.success)
+            {
+              const updatePostData = posts.filter((postItem)=>
+               postItem?._id!==selectedPost?._id);
+              dispatch(setPosts(updatePostData));
+              toast.success(res.data.message);
+            }                  
+         }
+        catch(error)
+         {
+           console.log(error);
+           toast.error(error.response.data.message);
+         }   
+     }   
+   
   const sendMessageHandler = async()=>
      {
         try
          {
-           const res = await axios.post(`/api/v1/post/${selectedPost._id}/comment`,{text},
+           const res = await axios.post(`/api/v1/post/${selectedPost?._id}/comment`,{text},
              {
               headers:{
                  "Content-Type": "application/json" 
@@ -89,7 +110,7 @@ export default function CommentDialog({open,setOpen,post}) {
             <div className='w-1/2 flex flex-col'>
               <div className='flex items-center justify-between px-4 p-4'>
                 <div className='flex gap-3 items-center'>       
-                <Link>
+                <Link to={`/profile/${selectedPost?.author?._id}`}>
                  <Avatar>
                     <AvatarImage src={selectedPost?.author?.profilePicture}/>
                     <AvatarFallback>
@@ -98,7 +119,8 @@ export default function CommentDialog({open,setOpen,post}) {
                  </Avatar>
                 </Link>
                  <div>
-                   <Link className='font-semibold text-xs'> 
+                   <Link to={`/profile/${selectedPost?.author?._id}`}
+                    className='font-semibold text-xs'> 
                      {selectedPost?.author?.username}
                    </Link> 
                    <span className='text-gray-600 text-sm'> {selectedPost?.author?.bio} </span>
@@ -109,15 +131,20 @@ export default function CommentDialog({open,setOpen,post}) {
                   <MoreHorizontal className='cursor-pointer'/>
                 </DialogTrigger>
                 <DialogContent className='flex flex-col items-center text-sm text-center'>
-                  <div className='cursor-pointer w-full font-bold text-[#ED4956]'>
-                    Unfollow  
-                  </div> 
-                  {/* follow /unfollow logic */}
-                  <div className='cursor-pointer w-full'>
-                    Add To Favourite
-                  </div>
-                  {/* book mark */}
-                </DialogContent>
+                     <Button variant='ghost' className='cursor-pointer w-full hover:bg-zinc-400 text-[#ED4956] font-bold
+                      border-0 outline-none focus:outline-none focus:ring-0 focus-visible:ring-0 
+                      focus-visible:ring-offset-0 shadow-none
+                      '>
+                         Unfollow
+                     </Button>
+                     <Button variant='ghost' className='cursor-pointer w-full hover:bg-zinc-400 text-black'>
+                         Add to Favourites
+                     </Button>
+                    { user&&user?._id==selectedPost?.author?._id&&
+                      <Button variant='ghost' className='cursor-pointer w-full hover:bg-zinc-400 text-[#ED4956]' onClick={deletePostHandler}>
+                         Delete
+                     </Button> }
+                 </DialogContent>              
                </Dialog>
               </div>   
               <hr/>

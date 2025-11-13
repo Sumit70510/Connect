@@ -9,6 +9,7 @@ import axios from 'axios';
 import { readFileAsDataURL } from '@/Lib/utils.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPosts } from '@/Redux/postSlice.js';
+import heic2any from "heic2any";
 
 export default function CreatePost({open,setOpen}) {
    const [caption,setCaption] = useState(""); 
@@ -19,16 +20,44 @@ export default function CreatePost({open,setOpen}) {
    const {user} = useSelector(store=>store.auth);
    const {posts} = useSelector(store=>store.post);
    const dispatch = useDispatch();
-   const fileChangeHandler = async(e)=>
-     {
-       const File=e?.target?.files?.[0];
-       if(File)
-        {   
-         setFile(File);    
-         const dataUrl = await readFileAsDataURL(File);
-         setImagePreview(dataUrl);
-        }   
-     }
+   
+  const fileChangeHandler = async (e) => {
+  
+  const file = e?.target?.files?.[0];
+  if (!file) return;
+  try {
+    let processedFile = file;
+   if (
+      file.type.includes("heic") ||
+      file.type.includes("heif") ||
+      file.name.toLowerCase().endsWith(".heic") ||
+      file.name.toLowerCase().endsWith(".heif")
+    ) {
+      console.log("Detected HEIC file, converting...");
+      const blob = await heic2any({
+        blob: file,
+        toType: "image/jpeg",
+        quality: 0.9,
+      });
+
+      processedFile = new File([blob], file.name.replace(/\.[^/.]+$/, ".jpeg"), {
+        type: "image/jpeg",
+      });
+    }
+
+    setFile(processedFile);
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+    reader.readAsDataURL(processedFile);
+  } catch (err) {
+    console.error("Error converting HEIC:", err);
+    toast.error("Failed to preview HEIC image. Try another format.");
+  }
+};
+
   
     const createPostHandler = async(e)=>
       {
@@ -42,9 +71,7 @@ export default function CreatePost({open,setOpen}) {
            setLoading(true);
            const res = await axios.post('/api/v1/post/addpost',formData,
              {
-               headers : {
-                'content-Type':'multipart/form-data'
-               },withCredentials:true
+              withCredentials:true
              }
             );
            if(res.data.success)
@@ -69,21 +96,21 @@ export default function CreatePost({open,setOpen}) {
       }
       
    return (
-    <Dialog open={open}>
+    <Dialog open={open} className='bg-gray-200'>
       <DialogContent onInteractOutside={()=>setOpen(false)}>
-        <DialogHeader className='text-center font-semibold'>Create New Post</DialogHeader> 
+        <DialogHeader className='text-center font-semibold text-black'>Create New Post</DialogHeader> 
         <div className='flex gap-3 items-center'>
-          <Avatar>
+          <Avatar className='text-black'>
             <AvatarImage src={user?.profilePicture} alt='img'/>
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div>
-            <h1 className='font-semibold text-xs'>{user?.username}</h1>
+            <h1 className='font-semibold text-xs text-black'>{user?.username}</h1>
             <span className='font-semibold text-xs text-gray-600'>{user?.bio}</span>
           </div>
         </div>  
         <Textarea value={caption} onChange={(e)=>setCaption(e.target.value)}
-         className='focus-visible:ring-transparent border-none' placeholder='Write a Caption........'/>
+         className='focus-visible:ring-transparent text-black' placeholder='Write a Caption........'/>
          {
           imagePreview&&(
             <div className='w-full h-64 flex items-center justify-center'>
@@ -93,7 +120,7 @@ export default function CreatePost({open,setOpen}) {
           )  
          } 
         <input type='file' className='hidden' ref={imageRef} onChange={fileChangeHandler}/>
-        <Button className='w-fit mx-auto bg-[#0095F6] hover:bg-[#045d99]' onClick={()=>imageRef.current.click()}>
+        <Button className='w-full mx-auto bg-[#0095F6] hover:bg-[#045d99]' onClick={()=>imageRef.current.click()}>
          Select From Device</Button>    
         {
           imagePreview&&(

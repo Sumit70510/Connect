@@ -15,12 +15,50 @@ export default function MobileComments() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { posts, selectedPost } = useSelector((store) => store.post);
-
+  const {user} = useSelector(store=>store.auth);
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [text, setText] = useState("");
+  
+  const deletePostHandler = async ()=>
+     {
+        try
+         {
+           const res = await axios.delete(`/api/v1/post/delete/${post._id}`,
+                             {withCredentials : true});
+           if(res.data.success)
+            {
+              const updatePostData = posts.filter((postItem)=>
+               postItem?._id!==post?._id);
+              dispatch(setPosts(updatePostData));
+              toast.success(res.data.message);
+            }                  
+         }
+        catch(error)
+         {
+           console.log(error);
+           toast.error(error.response.data.message);
+         }   
+     }  
+     
+   const bookmarkHandler = async()=>
+    {
+      try
+       {
+         const res = await axios.get(`/api/v1/post/${post?._id}/bookmark`,
+          {withCredentials:true}
+          );
+         if(res.data.success)
+          {
+            toast.success(res.data.message);
+          }
+       }
+      catch(error)
+       {
+        console.log(error);
+       }  
+    } 
 
-  // 🟢 Load post from Redux or fetch if not found
   useEffect(() => {
     const foundPost = posts.find((p) => p._id === postId);
     if (foundPost) {
@@ -88,18 +126,17 @@ export default function MobileComments() {
   if (!post) return null;
 
   return (
-     <div className={`flex min-h-screen justify-center overflow-y-hidden `}>
+     <div className={`flex min-h-screen justify-center bg-black overflow-y-hidden `}>
     <div className="bg-black text-white flex flex-col gap-2 h-full w-full box-border">
-      {/* Header */}
-      <div className="flex items-center gap-3 p-4 border-b border-gray-800 sticky top-0 bg-black z-10">
+
+      <div className="flex fixed w-full items-center gap-3 p-4 border-b border-gray-800 top-0 bg-black z-10">
         <ArrowLeft onClick={() => navigate(-1)} className="w-6 h-6 cursor-pointer" />
         <h1 className="text-lg font-semibold">Comments</h1>
       </div>
 
-      {/* Post Author */}
-      <div className="flex items-center justify-between px-4 py-3">
+      <div className="flex mt-14 items-center justify-between px-4 pt-3">
         <div className="flex gap-3 items-center">
-          <Link>
+          <Link to={`/profile/${post?.author?._id}`}>
             <Avatar>
               <AvatarImage src={post?.author?.profilePicture} />
               <AvatarFallback>
@@ -108,7 +145,7 @@ export default function MobileComments() {
             </Avatar>
           </Link>
           <div>
-            <Link className="font-semibold text-xs">
+            <Link to={`/profile/${post?.author?._id}`} className="font-semibold text-xs">
               {post?.author?.username}
             </Link>
             <span className="text-gray-600 text-sm"> {post?.author?.bio} </span>
@@ -118,11 +155,19 @@ export default function MobileComments() {
           <DialogTrigger asChild>
             <MoreHorizontal className="cursor-pointer" />
           </DialogTrigger>
-          <DialogContent className="flex flex-col items-center bg-zinc-700 text-sm text-center">
-            <div className="cursor-pointer w-full font-bold text-[#ED4956]">
+          <DialogContent className="flex flex-col items-center bg-zinc-900 text-sm text-center">
+            <Button className="cursor-pointer w-full font-bold hover:bg-zinc-700 norder-none bg-zinc-900 text-[#ED4956]
+            border-0 outline-none focus:outline-none focus:ring-0 focus-visible:ring-0 
+                     focus-visible:ring-offset-0 shadow-none">
               Unfollow
-            </div>
-            <div className="cursor-pointer w-full">Add To Favourite</div>
+            </Button>
+            <Button className="cursor-pointer w-full bg-zinc-900 border-none hover:bg-zinc-700">
+              Add To Favourite 
+            </Button>
+            { user&&user?._id==post?.author?._id&&
+               <Button variant='ghost' className='cursor-pointer w-full text-[#ED4956] hover:bg-zinc-400' onClick={deletePostHandler}>
+                 Delete
+               </Button> }
           </DialogContent>
         </Dialog>
       </div>
@@ -138,8 +183,7 @@ export default function MobileComments() {
         </div>
       )}
 
-      {/* Comments Section (scrollable separately) */}
-      <div className="flex-1 overflow-y-scroll hide-scrollbar p-4 space-y-3">
+      <div className="flex-1 overflow-y-scroll hide-scrollbar p-4 mb-12 space-y-3">
         {comments.length > 0 ? (
           comments.map((c) => <Comment key={c._id} comment={c} />)
         ) : (

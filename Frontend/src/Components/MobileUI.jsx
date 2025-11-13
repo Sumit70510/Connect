@@ -1,4 +1,4 @@
-import { Heart, Home, LogOut, MessageCircle, PlusSquare, Search, TrendingUp } from 'lucide-react';
+import { Heart, Home, LogOut, MessageCircle, PlusIcon, Search, TrendingUp } from 'lucide-react';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet, useNavigate } from 'react-router-dom';
@@ -24,12 +24,11 @@ export default function MobileUI() {
   const headerItems = [
       //   {icon : <TrendingUp/>,
       //    text : "Explore" },
-        {icon : <MessageCircle className='text-white'/>,
-         text : "Messages" },
-        {
-         icon : <LogOut className='text-white'/> ,
-         text : "Logout"
-        }
+       {icon : <PlusIcon className='text-white'/>,
+       text : "Create" },
+      {icon : <Heart className='text-white'/>,
+       text : "Notifications" },
+       
   ];
   
   const footerItems = [
@@ -37,12 +36,15 @@ export default function MobileUI() {
        text : "Home" },
       {icon : <Search className='text-white'/>,
        text : "Search" },
-      {icon : <PlusSquare className='text-white'/>,
-       text : "Create" },
-      {icon : <Heart className='text-white'/>,
-       text : "Notifications" },
+        {
+         icon : <LogOut className='text-white'/> ,
+         text : "Logout"
+        }
+      ,
+       {icon : <MessageCircle className='text-white'/>,
+         text : "Messages" }, 
       {icon : (
-              <Avatar className='w-6 h-6 text-white'>
+              <Avatar className='w-6 h-6 text-black'>
                 <AvatarImage src={user?.profilePicture}/>
                 <AvatarFallback>{user?.username?.slice(0,2).toUpperCase() || "CN"}</AvatarFallback>
               </Avatar> ),
@@ -105,7 +107,7 @@ export default function MobileUI() {
          headerItems.map((item, index) => (
          <button
           key={index}
-          className="flex items-center justify-center hover:bg-green-900 cursor-pointer rounded-lg p-2"
+          className="flex items-center justify-center hover:bg-zinc-700 cursor-pointer rounded-lg p-2"
           onClick={() => navbarHandler(item.text)}
           aria-label={item.text} >
             <span className="text-xl">{item.icon}</span>
@@ -125,7 +127,7 @@ export default function MobileUI() {
        {footerItems.map((item, index) => (
         <button
           key={index}
-          className="flex items-center gap-3 relative hover:bg-green-900 cursor-pointer rounded-lg p-3 my-3" 
+          className="flex items-center gap-3 relative hover:bg-zinc-700 cursor-pointer rounded-lg p-3 my-3" 
           onClick={()=>navbarHandler(item.text)} aria-label={item.text}>
             <span className="text-xl">{item.icon}</span>
              {
