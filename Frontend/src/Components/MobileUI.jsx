@@ -98,77 +98,78 @@ export default function MobileUI() {
     
   return (
     <div className="flex flex-col h-screen">
-      
-    {/* Header */}
-    <header className="h-12 flex items-center justify-between px-4 border-b border-zinc-700 bg-zinc-900 bg-opacity-70 fixed top-0 left-0 right-0 z-10">
-     <h1 className="text-lg font-bold text-white">LOGO</h1>
-     <div className="flex items-center gap-3">
-       {
-         headerItems.map((item, index) => (
-         <button
+  <header className="h-12 flex items-center justify-between px-4 border-b border-zinc-700 bg-zinc-900 bg-opacity-70 fixed top-0 left-0 right-0 z-10">
+  <h1 className="text-lg font-bold text-white">LOGO</h1>
+
+  <div className="flex items-center gap-3 relative">
+    {headerItems.map((item, index) => (
+      item.text === 'Notifications' ? (
+        <div key={index} className="relative">
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                className="flex items-center justify-center hover:bg-zinc-700 cursor-pointer rounded-lg p-2 relative"
+                aria-label={item.text}
+              >
+                <span className="text-xl">{item.icon}</span>
+                {likeNotification.length > 0 && (
+                  <span className="absolute bottom-4.5 left-4.5 bg-red-600 text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center shadow-md">
+                    {likeNotification.length}
+                  </span>
+                )}
+              </button>
+            </PopoverTrigger>
+
+            <PopoverContent className="bg-zinc-800 text-white border border-zinc-600 w-64">
+              <div>
+                {likeNotification.length === 0 ? (
+                  <p>No New Notification</p>
+                ) : (
+                  likeNotification.map((notification) => (
+                    <div key={notification?.userId} className="flex items-center gap-2 my-2">
+                      <Avatar className="w-6 h-6 text-black">
+                        <AvatarImage src={notification?.userDetails?.profilePicture} />
+                        <AvatarFallback>
+                          {notification?.userDetails?.username?.slice(0, 2).toUpperCase() || "CN"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <p className="text-sm">
+                        <span className="font-bold">{notification?.userDetails?.username}</span>
+                        &nbsp;liked your post
+                      </p>
+                    </div>
+                  ))
+                )}
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
+      ) : (
+        <button
           key={index}
           className="flex items-center justify-center hover:bg-zinc-700 cursor-pointer rounded-lg p-2"
           onClick={() => navbarHandler(item.text)}
-          aria-label={item.text} >
-            <span className="text-xl">{item.icon}</span>
-         </button>))
-       }
-     </div>
-    </header>
+          aria-label={item.text}
+        >
+          <span className="text-xl">{item.icon}</span>
+        </button>
+      )
+    ))}
+  </div>
+</header>
 
 
-    {/* Scrollable Feed */}
     <div className="flex-1 overflow-y-scroll hide-scrollbar pt-12 pb-12">
       <Outlet />
     </div>
 
-    {/* Footer */}
     <footer className="h-12 flex items-center justify-around border-t border-zinc-700 bg-zinc-900 bg-opacity-70 fixed bottom-0 left-0 right-0 z-10">
        {footerItems.map((item, index) => (
         <button
           key={index}
           className="flex items-center gap-3 relative hover:bg-zinc-700 cursor-pointer rounded-lg p-3 my-3" 
           onClick={()=>navbarHandler(item.text)} aria-label={item.text}>
-            <span className="text-xl">{item.icon}</span>
-             {
-                    item.text==='Notifications'&&likeNotification.length!==0&&
-                    (
-                     <Popover>
-                       <PopoverTrigger asChild>
-                         <Button size='icon' className='rounded-full h-5 w-5
-                          absolute bottom-6 left-6 bg-red-600 hover:bg-red-600'>
-                          {likeNotification.length}
-                         </Button>
-                       </PopoverTrigger>
-                       <PopoverContent>
-                        <div>
-                          {likeNotification.length===0?
-                            (<p>No New Notification</p> )
-                             :
-                            (
-                              likeNotification.map((notification)=>{
-                                return (
-                                  <div key={notification?.userId} className='flex items-center gap-2 my-2'>
-                                    <Avatar className='w-6 h-6'>
-                                      <AvatarImage src={notification?.userDetails?.profilePicture}/>
-                                      <AvatarFallback>{notification?.userDetails?.username.slice(0,2).toUpperCase() || "CN"}</AvatarFallback>
-                                    </Avatar>
-                                    <p className='text-sm'>
-                                     <span className='font-bold'>
-                                      {notification?.userDetails?.username}
-                                     </span> 
-                                      liked Your Post
-                                    </p>
-                                  </div>
-                                )
-                              })
-                            )
-                          }
-                        </div>
-                       </PopoverContent>
-                     </Popover> 
-                    )
-                  }
+            <span className="text-xl">{item.icon}</span>   
         </button>))
        }
      </footer>

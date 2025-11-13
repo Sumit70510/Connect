@@ -130,7 +130,7 @@ export default function Post({post})
           );
          if(res.data.success)
           {
-            setBookmarked(!bookmarked);
+            setBookmarked(user?.bookmark?.includes(post?._id)||false);
             toast.success(res.data.message);
           }
        }
@@ -145,7 +145,7 @@ export default function Post({post})
       <div className='flex items-center justify-between px-1 gap-2'>
         <div className='flex items-center gap-2 cursor-pointer'> 
          <Link to={`/profile/${post?.author?._id}`}>
-           <Avatar>
+           <Avatar className='text-black'>
             <AvatarImage src={post?.author?.profilePicture} alt='Post_image'/>
             <AvatarFallback>{post?.author?.username?.slice(0, 2)?.toUpperCase()}</AvatarFallback>
            </Avatar>
