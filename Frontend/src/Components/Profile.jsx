@@ -6,56 +6,102 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar.jsx";
 import { Button } from "./ui/button.jsx";
 import { Badge } from "./ui/badge.jsx";
 import { AtSign, Heart, MessageCircle } from "lucide-react";
-import { setSelectedUser } from "@/Redux/authslice.js";
+import { setAuthUser, setSelectedUser } from "@/Redux/authslice.js";
+import axios from "axios";
+import { toast } from "sonner";
+import { setSelectedPost } from "@/Redux/postSlice.js";
+import CommentDialog from "./CommentDialog.jsx";
 
 export default function Profile() {
   const params = useParams();
   const userId = params.id;
+  
   useGetUserProfile(userId);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { posts, selectedPost } = useSelector((store) => store.post);
   const { userProfile , user , selectedUser  } = useSelector((store) => store.auth);
   const [activeTab,setActiveTab] = useState('POSTS');
   const isLoggedInUserProfile = user?._id===userProfile?._id;
-  const [isFollowing,setIsFollowing] = useState(isLoggedInUserProfile?(
-                                       user?.following.includes(userProfile?._id)       
-                                       ):false);
+  const [isFollowing,setIsFollowing] = useState(false);
+  const [open,setOpen] = useState(false);
+  const [openSelectedPost,setOpenSelectedPost] = useState("")
+  // console.log(user);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 690);
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 690);
      window.addEventListener('resize', handleResize);
+     setIsFollowing(user?.following?.includes(userProfile?._id));
      return () => window.removeEventListener('resize', handleResize);
     }, []);
+    
+     useEffect(() => {
+          setIsFollowing(user?.following?.includes(userProfile?._id));
+       }, [user,userProfile]);
     
   const handleTabChange = (tab) => 
       {
        setActiveTab(tab); 
       }
   
-  const handleFollowUnFollow=(task)=>{
-       if(task==='FOLLOW')
+   const handleFollowUnFollow= async()=>
+     {
+       try
         {
-          // console.log('wants to follow',isFollowing);
-          setIsFollowing(true);
+          const res = await axios.post(`/api/v1/user/followorunfollow/${userProfile?._id}`,
+           {withCredentials:true}
+           );
+          if (res.data.success) 
+           {
+             const newFollowing = isFollowing
+             ? user?.following.filter(id => id !== userProfile?._id)
+             :[...user?.following, userProfile?._id];
+             setIsFollowing(!isFollowing);
+            dispatch(setAuthUser({ ...user, following: newFollowing }));
+            toast.success(res.data.message);
+           }
+          else
+           {
+            toast.error(res.data.message);
+           }
         }
-       else
+       catch(error)
         {
-         setIsFollowing(false);
+         console.log(error);
+        }  
+     } 
           
-        }   
-    }
      
    const sendMessage = ()=>{
        dispatch(setSelectedUser(userProfile));
        navigate('/chat');
     } 
-      
+    
+ const openPostDialog = async (postId) => {
+  try {
+    const res = await axios.get(`/api/v1/post/singelPost/${postId}`, {
+      withCredentials: true
+    });
+
+    if (res.data.success) {
+      const fullPost = res.data.post;
+      dispatch(setSelectedPost(fullPost));
+      setOpenSelectedPost(fullPost);
+      setOpen(true);
+    }
+  } catch (err) {
+    console.log(err);
+    toast.error("Failed to load post");
+  }
+};
+
+
   const displayedPost = activeTab==='POSTS'? userProfile?.posts : userProfile?.bookmarks;  
   
   return (
-  <div className={`flex h-full justify-center overflow-y-hidden ${isMobile?"":"mt-6 p-4 ml-[16%]"}`}>
+  <div className={`flex h-full justify-center scroll-smooth overflow-y-hidden ${isMobile?"":"mt-6 p-4 ml-[16%]"}`}>
     {/* <div className="flex flex-col gap-12 p-8"> */}
-    <div className="flex flex-col gap-6 p-2 h-full w-full max-w-full box-border">
+    <div className="flex flex-col gap-6 p-2 h-full w-full max-w-full box-border scroll-smooth">
 
     {/* <div className="flex justify-between"> */}
     <div className="flex flex-col gap-5 sm:grid sm:grid-cols-[1fr_2fr] sm:gap-4 w-full items-center sm:items-start">
@@ -89,7 +135,7 @@ export default function Profile() {
            isFollowing ? (
             <>
             <Button className="h-8 bg-gray-300 hover:bg-gray-400" variant="secondary"
-              onClick={()=>handleFollowUnFollow('UNFOLLOW')} >
+              onClick={handleFollowUnFollow} >
               Unfollow
             </Button>
             <Button className="h-8 bg-gray-300 hover:bg-gray-400" variant="secondary"
@@ -99,7 +145,7 @@ export default function Profile() {
             </>
           ) : (
             <Button className="h-8 bg-[#0095f6] hover:bg-[#0d6fb1]" 
-              onClick={()=>handleFollowUnFollow('FOLLOW')} >
+              onClick={handleFollowUnFollow} >
               Follow
             </Button>
            )
@@ -139,7 +185,7 @@ export default function Profile() {
      </section>
     </div>
    
-    <div className="border-t border-gray-500">
+    <div className="border-t border-gray-500 scroll-smooth">
     <div className="flex items-center justify-center gap-10 text-sm">
       <span className={`py-3 cursor-pointer ${activeTab==='POSTS'?'font-bold':''}`} onClick={()=>handleTabChange('POSTS')}>
         POSTS
@@ -155,14 +201,25 @@ export default function Profile() {
       </span>
     </div> 
     </div>
+   
+   <CommentDialog open={open} setOpen={setOpen} post={openSelectedPost}/>
   
    {/* <div className="grid grid-cols-3 gap-3"> */}
-   <div className={`grid grid-cols-3 gap-1 ${isMobile?'overflow-y-scroll':'overflow-hidden'} w-full`}>
+   <div className={`grid grid-cols-3 gap-1 ${isMobile?'overflow-y-scroll hide-scrollbar':'scroll-smooth'} w-full`}>
      {
       displayedPost?.slice()?.reverse()?.map((post)=>{
         return(
-          <div key={post?._id} className="relative group cursor-pointer">
-            <img src={post.image} alt='Post Image' 
+          <div key={post?._id} className="relative group cursor-pointer"
+             onClick={() => {
+               if (isMobile) {
+                dispatch(setSelectedPost(post));
+                navigate(`/${post?._id}/comments`);
+                 } else {
+                  openPostDialog(post?._id);
+                }
+              }}
+            >
+            <img src={post?.image} alt='Post Image' 
             // className='rounded-sm my-2 w-full aspect-square object-cover'
              className='rounded-sm my-2 w-full aspect-square object-cover' 
             />
@@ -184,7 +241,6 @@ export default function Profile() {
       })
      }
    </div>
-  
   </div>
 </div>
   );

@@ -16,9 +16,10 @@ app.use(cookieParser());
  
 const corsOption={
     origin : process.env.URL,
-    credentials : true  
-}
-
+    credentials : true,  
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+};
 const __dirname=path.resolve(); 
 
 app.use(cors(corsOption));

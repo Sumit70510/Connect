@@ -9,6 +9,7 @@ import { Button } from "./ui/button";
 import { ArrowLeft, MoreHorizontal } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
+import { setAuthUser } from "@/Redux/authslice";
 
 export default function MobileComments() {
   const { postId } = useParams();
@@ -19,7 +20,13 @@ export default function MobileComments() {
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [text, setText] = useState("");
+  const [isBookmarked,setIsBookmarked] = useState(false);
+  const [isFollowing,setIsFollowing] = useState(false);
   
+  useEffect(() => {
+     setIsBookmarked(user?.bookmarks?.includes(post?._id));
+     setIsFollowing(user?.following?.includes(post?.author?._id));
+  }, [user]);
   const deletePostHandler = async ()=>
      {
         try
@@ -41,24 +48,56 @@ export default function MobileComments() {
          }   
      }  
      
-   const bookmarkHandler = async()=>
-    {
-      try
+      const bookmarkHandler = async()=>
        {
-         const res = await axios.get(`/api/v1/post/${post?._id}/bookmark`,
-          {withCredentials:true}
-          );
-         if(res.data.success)
+         try
           {
-            toast.success(res.data.message);
+            const res = await axios.get(`/api/v1/post/${post?._id}/bookmark`,
+             {withCredentials:true}
+             );
+            if(res.data.success)
+             {
+               const updatedBookmarks = isBookmarked
+               ? user?.bookmarks.filter(id => id !== post._id)
+               : [...user?.bookmarks, post._id];
+               dispatch(setAuthUser({ ...user, bookmarks: updatedBookmarks }));
+               setIsBookmarked(!isBookmarked);
+               toast.success(res.data.message);
+             }
           }
-       }
-      catch(error)
-       {
-        console.log(error);
-       }  
-    } 
-
+         catch(error)
+          {
+           console.log(error);
+          }  
+       } 
+       
+       const followOrUnfollowHandler = async()=>
+        {
+          try
+           {
+             const res = await axios.post(`/api/v1/user/followorunfollow/${post?.author?._id}`,
+              {withCredentials:true}
+              );
+             if (res.data.success) {
+               
+             const newFollowing = isFollowing
+             ? user?.following.filter(id => id !== post?.author?._id)
+               : [...user.following, post?.author?._id];
+             dispatch(setAuthUser({ ...user, following: newFollowing }));
+             
+              setIsFollowing(!isFollowing);
+              toast.success(res.data.message);
+             } else {
+               toast.error(res.data.message);
+              }
+           }
+          catch(error)
+           {
+            console.log(error);
+           }  
+        } 
+       
+    
   useEffect(() => {
     const foundPost = posts.find((p) => p._id === postId);
     if (foundPost) {
@@ -155,16 +194,19 @@ export default function MobileComments() {
           <DialogTrigger asChild>
             <MoreHorizontal className="cursor-pointer" />
           </DialogTrigger>
-          <DialogContent className="flex flex-col items-center bg-zinc-900 text-sm text-center">
-            <Button className="cursor-pointer w-full font-bold hover:bg-zinc-700 norder-none bg-zinc-900 text-[#ED4956]
-            border-0 outline-none focus:outline-none focus:ring-0 focus-visible:ring-0 
-                     focus-visible:ring-offset-0 shadow-none">
-              Unfollow
-            </Button>
-            <Button className="cursor-pointer w-full bg-zinc-900 border-none hover:bg-zinc-700">
-              Add To Favourite 
-            </Button>
-            { user&&user?._id==post?.author?._id&&
+          <DialogContent className="flex flex-col items-center bg-zinc-900 text-sm text-center">        
+              { user?._id!==post?.author?._id&&
+                 <Button variant='ghost' className={`cursor-pointer w-full hover:bg-zinc-400 text-[#ED4956] font-bold
+                  border-0 outline-none focus:outline-none focus:ring-0 focus-visible:ring-0 
+                   focus-visible:ring-offset-0 shadow-none  ${!isFollowing&&'text-blue-500'}
+                   `} onClick={followOrUnfollowHandler}>
+                   {isFollowing?'Unfollow':'Follow'}
+                 </Button>}
+                 <Button variant='ghost' className='cursor-pointer w-full hover:bg-zinc-400'
+                      onClick={bookmarkHandler}>
+                   {isBookmarked?'Remove From Favourites':'Add To Favourites'}
+                 </Button>
+              { user&&user?._id==post?.author?._id&&
                <Button variant='ghost' className='cursor-pointer w-full text-[#ED4956] hover:bg-zinc-400' onClick={deletePostHandler}>
                  Delete
                </Button> }

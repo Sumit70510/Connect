@@ -137,7 +137,7 @@ export default function ChatPage() {
             className="flex gap-3 items-center p-3 hover:bg-zinc-700 cursor-pointer w-full"
             onClick={() => dispatch(setSelectedUser(suggestedUser))}
           >
-            <Avatar className="w-14 h-14 text-green-900">
+            <Avatar className="w-14 h-14 text-black">
               <AvatarImage src={suggestedUser?.profilePicture} alt="Profile_image" />
               <AvatarFallback>
                 {suggestedUser?.username?.slice(0, 2)?.toUpperCase()}
@@ -169,7 +169,7 @@ export default function ChatPage() {
         >
           <ArrowLeft/>
         </button>
-        <Avatar className="w-12 h-12 text-green-900">
+        <Avatar className="w-12 h-12 text-black">
           <AvatarImage src={selectedUser?.profilePicture} alt="Profile_image" />
           <AvatarFallback>
             {selectedUser?.username?.slice(0, 2)?.toUpperCase()}
@@ -190,7 +190,7 @@ export default function ChatPage() {
           className="flex-1 ml-2 mr-2 focus-visible:ring-transparent border border-zinc-700 rounded-lg px-2 py-1"
           placeholder="Type your message here..."
         />
-        <Button onClick={() => sendMessageHandler(selectedUser?._id)} className="mr-1">
+        <Button onClick={() => sendMessageHandler(selectedUser?._id)} className="bg-white text-black mr-1">
           Send
         </Button>
       </div>

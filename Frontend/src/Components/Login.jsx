@@ -69,12 +69,10 @@ export default function Login() {
    return(
      <div className={`flex items-center w-screen h-screen justify-center ${'bg-linear-to-r from-[#141E30] to-[#243B55]'}`}>
         <form className={`shadow-lg flex flex-col gap-5 p-4 ${
-        'bg-blue-50 text-black border  rounded-lg mx-1'}`} 
+        'bg-white text-black border  rounded-lg mx-1'}`} 
         onSubmit={loginHandler}>
-           <div className='my-4'>
-             <h1 className='text-center font-bold text-xl'>
-                LOGO
-             </h1>
+           <div className='my-4 flex flex-col items-center'>
+             <img src='/Black.jpeg' className='w-30 h-12'/>
              <p className='text-sm text-center'>
                Login To See Photos & Videos From Your Friends 
              </p>

@@ -105,11 +105,15 @@ export default function LeftSidebar() {
   }, []); 
     
   return (
-     <div className='fixed top-0 z-10 left-0 px-4 border-r border-gray-300 w-auto h-screen'>
+     <div className='fixed top-0 z-10 left-0 px-2 border-r border-gray-300 w-auto h-screen'>
       <div className='flex flex-col px-4 h-full'>
      {/* <div className='fixed top-0 z-10 left-0 px-4 border-r border-gray-300 w-[16%] h-screen'> */}
         {/* <div className='flex flex-col'> */}
-        <h1 className='my-8 justify-center font-bold text-xl'>LOGO</h1>  
+        {/* <h1 className='my-8 justify-center font-bold text-xl'>LOGO</h1>   */}
+      
+        {isSidebarExpanded?<img src='/Black.jpeg' className='justify-center mt-8 mb-6 w-25 h-12'/>:
+        <img src='/LOGO.webp' className='justify-center mx-2 my-9 w-8 h-8'/>}
+      
         <div>
           {
             sidebarItems.map((item,index)=>{

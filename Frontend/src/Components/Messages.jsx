@@ -28,7 +28,7 @@ export default function Messages({ selectedUser }) {
     <div className="overflow-y-auto hide-scrollbar flex-1 mt-12 p-4">
       <div className="flex justify-center">
         <div className="flex flex-col items-center justify-center">
-          <Avatar className="w-20 h-20 text-green-900">
+          <Avatar className="w-20 h-20 text-black">
             <AvatarImage src={selectedUser?.profilePicture} alt="Profile_image" />
             <AvatarFallback>
               {selectedUser?.username?.slice(0, 2)?.toUpperCase()}

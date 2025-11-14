@@ -448,3 +448,35 @@ export const BookmarkPost = async(req,res)=>
        return res.status(500).json({message:"Internal Server Error",success: false}); 
      }  
  } 
+ 
+export const getSinglePost = async (req, res) => {
+  try {
+    const postId = req.params.id;
+
+    const post = await Post.findById(postId).
+     populate('author', 'username profilePicture')
+      .populate({
+        path: 'comments',
+        populate: { path: 'author', select: 'username profilePicture' }
+      });
+
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: "Post not found"
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      post
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    });
+  }
+};

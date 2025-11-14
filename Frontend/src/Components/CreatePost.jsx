@@ -96,7 +96,7 @@ export default function CreatePost({open,setOpen}) {
       }
       
    return (
-    <Dialog open={open} className='bg-gray-200'>
+    <Dialog open={open} className='bg-gray-300'>
       <DialogContent onInteractOutside={()=>setOpen(false)}>
         <DialogHeader className='text-center font-semibold text-black'>Create New Post</DialogHeader> 
         <div className='flex gap-3 items-center'>

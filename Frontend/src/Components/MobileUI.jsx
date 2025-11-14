@@ -99,8 +99,8 @@ export default function MobileUI() {
   return (
     <div className="flex flex-col h-screen">
   <header className="h-12 flex items-center justify-between px-4 border-b border-zinc-700 bg-zinc-900 bg-opacity-70 fixed top-0 left-0 right-0 z-10">
-  <h1 className="text-lg font-bold text-white">LOGO</h1>
-
+  {/* <h1 className="text-lg font-bold text-white">LOGO</h1> */}
+  <img src='/white.png' className='w-30 h-12'/>
   <div className="flex items-center gap-3 relative">
     {headerItems.map((item, index) => (
       item.text === 'Notifications' ? (

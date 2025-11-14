@@ -13,7 +13,7 @@ export default function useGetSuggestedUsers() {
                  {withCredentials:true});
            if(res.data.success)
             {
-              console.log(res.data.users);  
+              // console.log(res.data.users);  
               dispatch(setSuggestedUsers(res.data.users));  
             }  
          }

@@ -12,6 +12,7 @@ import axios from 'axios';
 import { setPosts, setSelectedPost } from '@/Redux/postSlice.js';
 import { Badge } from './ui/badge.jsx';
 import { Link, useNavigate } from 'react-router';
+import { setAuthUser } from '@/Redux/authslice.js';
 
 export default function Post({post}) 
  {
@@ -22,17 +23,21 @@ export default function Post({post})
    const dispatch = useDispatch();
    const [postLike , setPostLike] = useState(post?.likes?.length);
    const [liked,setLiked] = useState(post?.likes?.includes(user?._id)||false);
-   const [bookmarked,setBookmarked] = useState(user?.bookmark?.includes(post?._id)||false);
+   const [isBookmarked,setIsBookmarked] = useState(false);
+   const [isFollowing,setIsFollowing] = useState(false);
    const [comment,setComment] = useState(post?.comments);
    const navigate = useNavigate();
    const [isMobile, setIsMobile] = useState(window.innerWidth < 690);
    
+   useEffect(() => {
+      const handleResize = () => setIsMobile(window.innerWidth < 690);
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+     }, []);
      useEffect(() => {
-       const handleResize = () => setIsMobile(window.innerWidth < 690);
-       window.addEventListener('resize', handleResize);
-       return () => window.removeEventListener('resize', handleResize);
-      }, []);
-   
+      setIsBookmarked(user?.bookmarks?.includes(post?._id));
+      setIsFollowing(user?.following?.includes(post?.author?._id));
+   }, [user]);
    const changeEventHandler = (e)=>
      {
         const inputText = e.target.value;
@@ -130,7 +135,11 @@ export default function Post({post})
           );
          if(res.data.success)
           {
-            setBookmarked(user?.bookmark?.includes(post?._id)||false);
+            const updatedBookmarks = isBookmarked
+            ? user?.bookmarks.filter(id => id !== post._id)
+            : [...user?.bookmarks, post._id];
+            dispatch(setAuthUser({ ...user, bookmarks: updatedBookmarks }));
+            setIsBookmarked(!isBookmarked);
             toast.success(res.data.message);
           }
        }
@@ -139,7 +148,34 @@ export default function Post({post})
         console.log(error);
        }  
     } 
-     
+    
+    const followOrUnfollowHandler = async()=>
+     {
+       try
+        {
+          const res = await axios.post(`/api/v1/user/followorunfollow/${post?.author?._id}`,
+           {withCredentials:true}
+           );
+          if (res.data.success) {
+            
+          const newFollowing = isFollowing
+          ? user.following.filter(id => id !== post?.author?._id)
+            : [...user.following, post?.author?._id];
+          dispatch(setAuthUser({ ...user, following: newFollowing }));
+          
+           setIsFollowing(!isFollowing);
+           toast.success(res.data.message);
+          } else {
+            toast.error(res.data.message);
+           }
+        }
+       catch(error)
+        {
+         console.log(error);
+        }  
+     } 
+   
+    
    return (
     <div className={`mb-9 mt-4 w-full max-w-sm mx-auto p-1`}>
       <div className='flex items-center justify-between px-1 gap-2'>
@@ -161,17 +197,22 @@ export default function Post({post})
                     <MoreHorizontal className='cursor-pointer'/>
                 </DialogTrigger>
                 <DialogContent className='flex flex-col items-center text-sm text-center'>
-                    <Button variant='ghost' className='cursor-pointer w-full hover:bg-zinc-400 text-[#ED4956] font-bold
+                    { user?._id!==post?.author?._id&&
+                      <Button variant='ghost' className={`cursor-pointer w-full hover:bg-zinc-400 text-[#ED4956] font-bold
                      border-0 outline-none focus:outline-none focus:ring-0 focus-visible:ring-0 
-                     focus-visible:ring-offset-0 shadow-none
-                     '>
-                        Unfollow
-                    </Button>
-                    <Button variant='ghost' className='cursor-pointer w-full hover:bg-zinc-400 text-black'>
-                        Add to Favourites
+                     focus-visible:ring-offset-0 shadow-none  ${!isFollowing&&'text-blue-500'}
+                     `}
+                     onClick={followOrUnfollowHandler}
+                     >
+                        {isFollowing?'Unfollow':'Follow'}
+                    </Button>}
+                    <Button variant='ghost' className='cursor-pointer w-full hover:bg-zinc-400 text-black'
+                      onClick={bookmarkHandler}
+                     >
+                        {isBookmarked?'Remove From Favourites':'Add To Favourites'}
                     </Button>
                    { user&&user?._id==post?.author?._id&&
-                     <Button variant='ghost' className='cursor-pointer w-full hover:bg-zinc-400 text-black' onClick={deletePostHandler}>
+                     <Button variant='ghost' className='cursor-pointer w-full hover:bg-zinc-400 text-[#ED4956] ' onClick={deletePostHandler}>
                         Delete
                     </Button> }
                 </DialogContent>
@@ -180,7 +221,7 @@ export default function Post({post})
       </div>
       
       <img src={post?.image}//'https://www.pixelstalk.net/wp-content/uploads/2016/07/Desktop-hd-3d-nature-images-download.jpg'
-         className='rounded-sm my-2 aspect-square object-contain mx-auto border-y border-zinc-400  cursor-pointer'
+         className='rounded-sm my-2 w-8000px h-8000px object-contain mx-auto border-y border-zinc-400  cursor-pointer'
           onClick={() => {
             dispatch(setSelectedPost(post));
             if(isMobile) {
@@ -206,8 +247,8 @@ export default function Post({post})
          <Send className='cursor-pointer hover:text-gray-600'/>
        </div>
          {
-           bookmarked?
-           <FaBookmark onClick={bookmarkHandler} className='cursor-pointer w-6 h-6 hover:text-gray-100'/>
+           isBookmarked?
+           <FaBookmark onClick={bookmarkHandler} className='cursor-pointer w-6 h-6 hover:text-gray-500'/>
            :
            <Bookmark onClick={bookmarkHandler} className='cursor-pointer w-6 h-6 hover:text-gray-600'/>
          }

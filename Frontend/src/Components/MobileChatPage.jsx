@@ -63,7 +63,7 @@ export default function MobileChatPage() {
           >
           <ArrowLeft />
         </button>
-        <Avatar className="w-12 h-12 text-green-900">
+        <Avatar className="w-12 h-12 text-black">
           <AvatarImage src={selectedUser?.profilePicture} alt="Profile_image" />
           <AvatarFallback>
             {selectedUser?.username?.slice(0, 2)?.toUpperCase()}
@@ -86,7 +86,7 @@ export default function MobileChatPage() {
           className="flex-1 ml-2 mr-2 focus-visible:ring-transparent border border-zinc-700 rounded-lg px-2 py-1"
           placeholder="Type your message here..."
         />
-        <Button onClick={() => sendMessageHandler(selectedUser?._id)} className="mr-1">
+        <Button onClick={() => sendMessageHandler(selectedUser?._id)} className="bg-white text-black mr-1">
           Send
         </Button>
       </div>

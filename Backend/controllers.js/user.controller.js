@@ -83,16 +83,23 @@ export const login = async(req,res)=>
                {return post;}
              return null; 
            })) 
-           
+      //    const populatedBookmarks = await Promise.all(
+      //     user.bookmarks.map(async (postId) => {
+      //     return await Post.findById(postId);
+      //  })
+      //   );  
          user={
              _id : user._id,
+             name : user.name,
+             gender : user.gender,
             username : user.username,
             email : user.email,
             profilePicture : user.profilePicture,
             bio : user.bio,
             followers : user.followers,
             following : user.following,
-            posts : populatedPosts
+            posts : populatedPosts,
+            bookmarks:user.bookmarks
          }
         
         return res.cookie('token',token,{httpOnly:true,sameSite:'strict',maxAge:1*24*60*60*1000})
